@@ -31,18 +31,19 @@ Module * readModules(void){
     char pracAmountAndHr[4];
     //create a dynamic array whose size is based of the numberOfModules currently added
     int numberOfModules = 0;
-    Module *listOfModules[numberOfModules];
+    Module *listOfModules = (Module *)malloc(sizeof(Module));
     //iterate over each line in modules.txt to record each module
     while(fscanf(file, "%s %d %s %s\n", moduleID, &semester, lectureAmountAndHr, pracAmountAndHr)!= EOF){
         numberOfModules++;
-        realloc(listOfModules, numberOfModules);
+        realloc(listOfModules, sizeof(Module) * numberOfModules);
         Module *module = malloc(sizeof(Module));
         strcpy(module->moduleID, moduleID);
         module->semester = semester;
         strcpy(module->lectureAmountAndHr, lectureAmountAndHr);
         strcpy(module->pracAmountAndHr, pracAmountAndHr);
         //add the instantiated struct to an array of structs
-        *listOfModules[numberOfModules - 1] = *module;
+        listOfModules[numberOfModules - 1] = *module;
+
     }
-    return *listOfModules;
+    return listOfModules;
 }
