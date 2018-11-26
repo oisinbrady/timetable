@@ -1,10 +1,10 @@
-typedef struct Module{
+typedef struct module{
     char moduleID[7];
     int semester;
     char lectureAmountAndHr[4];
     char pracAmountAndHr[4];
-} module;
+} Module;
 
 
-struct Module * readModules(void);
+Module * readModules(void);
 void menuLoop(void);
