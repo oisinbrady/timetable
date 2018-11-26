@@ -32,7 +32,8 @@ Module * readModules(void){
     //create a dynamic array whose size is based of the numberOfModules currently added
     int numberOfModules = 1;
     //allocate memory for an array of pointers to modules (initial size = 1)
-    Module *listOfModules = (Module *)malloc(sizeof(Module) * 10);
+    //Module *listTest[10];
+    Module *listOfModules = (Module*)malloc(sizeof(Module) * 10);
     //iterate over each line in modules.txt to record each module
     while(fscanf(file, "%s %d %s %s\n", moduleID, &semester, lectureAmountAndHr, pracAmountAndHr)!= EOF){
         //allocate memory for a new instance of module
@@ -43,9 +44,11 @@ Module * readModules(void){
         strcpy(module->pracAmountAndHr, pracAmountAndHr);
         //add the instantiated struct to an array of structs
         listOfModules[numberOfModules - 1] = *module;
+        //listTest[numberOfModules - 1] = module;
         numberOfModules++;
         //reallocate the array so more pointers to modules can be added
         listOfModules = realloc(listOfModules, sizeof(Module) * numberOfModules);
+
     }
     return listOfModules;
 }
