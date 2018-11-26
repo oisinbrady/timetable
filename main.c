@@ -5,6 +5,7 @@ int main() {
     Module *modulesList = readModules();
     for(int i = 0; i < sizeof(modulesList); i++){
         printf(modulesList[i].moduleID);
+        printf("\n");
     }
     return 0;
 }
