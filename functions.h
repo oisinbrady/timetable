@@ -6,5 +6,5 @@ typedef struct module{
 } Module;
 
 
-Module * readModules(void);
+Module *readModules(void);
 void menuLoop(void);
