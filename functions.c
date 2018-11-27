@@ -41,6 +41,7 @@ Module *readModules(void) {
     rewind(file); //go back to the beginning of the file
     //create a dynamic array whose size is based of the numberOfModules currently added
     Module *listOfModules[numberOfModules];
+    //Module *listOfModules[numberOfModules];
     //iterate over each line in modules.txt to record each module
     int moduleIterator = 0;
     while(fscanf(file, "%s %d %s %s\n", moduleID, &semester, lectureAmountAndHr, pracAmountAndHr)!= EOF){
@@ -55,5 +56,6 @@ Module *readModules(void) {
         listOfModules[moduleIterator] = module;
         moduleIterator++;
     }
-    return (Module *) listOfModules;
+    malloc(sizeof(listOfModules)*numberOfModules);
+    return *listOfModules;
 }

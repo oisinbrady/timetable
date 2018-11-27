@@ -5,6 +5,7 @@ typedef struct module{
     char pracAmountAndHr[4];
 } Module;
 
-
+int getLines(const FILE *file);
+char *getFilePath();
 Module *readModules(void);
 void menuLoop(void);
