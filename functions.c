@@ -1,3 +1,4 @@
+
 #include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,8 +40,11 @@ Module * readModules(void){
     }
     rewind(file); //go back to the beginning of the file
     //create a dynamic array whose size is based of the numberOfModules currently added
-    Module *listOfModules = calloc((size_t) numberOfModules, (sizeof(Module) + 3)); //TODO the X * operation is not increasing the size only the module size is. the size is always 8 only has 8 values: this is why only 8 modules are printed
-    int i = sizeof(listOfModules);
+    //N.B calloc assigns each element value to zero initially
+    Module *listOfModules = calloc((size_t) numberOfModules, (sizeof(Module) + 3)); //numberOfModules is not effecting the number of elements (remains 8 regardless)
+
+    /*for debugging*/ int lengthOfArray = sizeof(listOfModules); int sizeOfEachModule = sizeof(listOfModules[0]);
+
     printf("%d", (int) sizeof(listOfModules));
     //iterate over each line in modules.txt to record each module
     int moduleIterator = 0;
