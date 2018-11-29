@@ -29,13 +29,21 @@ Module * readModules(void){
     int semester;
     char lectureAmountAndHr[4];
     char pracAmountAndHr[4];
+    //find the number of modules (lines) in the file
+    int numberOfModules = 0;
+    while(!feof(file)){
+        int ch =  fgetc(file);
+        if(ch == '\n'){
+            numberOfModules++;
+        }
+    }
+    rewind(file); //go back to the beginning of the file
     //create a dynamic array whose size is based of the numberOfModules currently added
-    int numberOfModules = 1;
-    //allocate memory for an array of 10 pointers to module structs
-    Module *listOfModules = malloc(10 * sizeof(Module)); //TODO the X * operation is not increasing the size only the module size is. the size is always 8 only has 8 values: this is why only 8 modules are printed
-
+    Module *listOfModules = calloc((size_t) numberOfModules, (sizeof(Module) + 3)); //TODO the X * operation is not increasing the size only the module size is. the size is always 8 only has 8 values: this is why only 8 modules are printed
+    int i = sizeof(listOfModules);
     printf("%d", (int) sizeof(listOfModules));
     //iterate over each line in modules.txt to record each module
+    int moduleIterator = 0;
     while(fscanf(file, "%s %d %s %s\n", moduleID, &semester, lectureAmountAndHr, pracAmountAndHr)!= EOF){
         //allocate memory for a new instance of module
         Module *module = malloc(sizeof(*module) + 3); //+ 3 for the 3 terminating characters in each char sequence
@@ -44,14 +52,13 @@ Module * readModules(void){
         strcpy(module->lectureAmountAndHr, lectureAmountAndHr);
         strcpy(module->pracAmountAndHr, pracAmountAndHr);
         //add the instantiated struct to an array of structs
-        listOfModules[numberOfModules - 1] = *module;
-        //listTest[numberOfModules - 1] = module;
-        numberOfModules++;
+        listOfModules[moduleIterator] = *module;
+        //listTest[moduleIterator - 1] = module;
+        moduleIterator++;
         //reallocate the array so more pointers to modules can be added (double its size)
-        if(numberOfModules > (int) sizeof(listOfModules)){
-            listOfModules = realloc(listOfModules, (sizeof(Module) * 2));
-        }
-
+        //if(moduleIterator > (int) sizeof(listOfModules)){
+          //  listOfModules = realloc(listOfModules, (sizeof(Module) * 2));
+        //}
         free(module);
     }
     free(fileDirectory);
