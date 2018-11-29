@@ -11,6 +11,7 @@ char *getFolder() {
     printf("Enter the directory name of timetable files: ");
     scanf("%s", fileDirectory);
     return fileDirectory;
+    //
 }
 
 Module * readModules(char *file){
