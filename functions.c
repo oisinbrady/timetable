@@ -45,7 +45,7 @@ Module * readModules(void){
 
     /*for debugging*/ int lengthOfArray = sizeof(listOfModules); int sizeOfEachModule = sizeof(listOfModules[0]);
 
-    printf("%d", (int) sizeof(listOfModules));
+    printf("%d,%d\n", lengthOfArray, sizeOfEachModule);
     //iterate over each line in modules.txt to record each module
     int moduleIterator = 0;
     while(fscanf(file, "%s %d %s %s\n", moduleID, &semester, lectureAmountAndHr, pracAmountAndHr)!= EOF){
@@ -57,12 +57,8 @@ Module * readModules(void){
         strcpy(module->pracAmountAndHr, pracAmountAndHr);
         //add the instantiated struct to an array of structs
         listOfModules[moduleIterator] = *module;
-        //listTest[moduleIterator - 1] = module;
         moduleIterator++;
-        //reallocate the array so more pointers to modules can be added (double its size)
-        //if(moduleIterator > (int) sizeof(listOfModules)){
-          //  listOfModules = realloc(listOfModules, (sizeof(Module) * 2));
-        //}
+        //free the memory allocated to the new instance of Module to prevent memory leaks
         free(module);
     }
     free(fileDirectory);
