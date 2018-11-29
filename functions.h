@@ -9,7 +9,7 @@ typedef struct schemes{
     int yearOfStudy;
     int numberOfStudents;
     int numberOfCoreModules;
-
+    //char[]
 } Schemes;
 
 int numberOfModules;
