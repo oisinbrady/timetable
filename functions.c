@@ -1,4 +1,3 @@
-
 #include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,7 +39,7 @@ Module * readModules(void){
     }
     rewind(file); //go back to the beginning of the file
     //create a dynamic array whose size is based of the numberOfModules currently added
-    //N.B calloc assigns each element value to zero initially
+    //N.B calloc() assigns each element value to zero initially
     Module *listOfModules = calloc((size_t) numberOfModules, (sizeof(Module) + 3)); //numberOfModules is not effecting the number of elements (remains 8 regardless)
 
     /*for debugging*/ int lengthOfArray = sizeof(listOfModules); int sizeOfEachModule = sizeof(listOfModules[0]);
@@ -51,6 +50,7 @@ Module * readModules(void){
     while(fscanf(file, "%s %d %s %s\n", moduleID, &semester, lectureAmountAndHr, pracAmountAndHr)!= EOF){
         //allocate memory for a new instance of module
         Module *module = malloc(sizeof(*module) + 3); //+ 3 for the 3 terminating characters in each char sequence
+        //assign all module information from .txt file to their subsequent struct (Module) values
         strcpy(module->moduleID, moduleID);
         module->semester = semester;
         strcpy(module->lectureAmountAndHr, lectureAmountAndHr);
