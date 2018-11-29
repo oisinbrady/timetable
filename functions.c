@@ -29,7 +29,7 @@ Module * readModules(void){
     int semester;
     char lectureAmountAndHr[4];
     char pracAmountAndHr[4];
-    //find the number of modules (lines) in the file
+    //find number of modules (lines) in the file
     int numberOfModules = 0;
     while(!feof(file)){
         int ch =  fgetc(file);
