@@ -4,7 +4,16 @@ typedef struct module{
     char lectureAmountAndHr[4];
     char pracAmountAndHr[4];
 } Module;
+typedef struct schemes{
+    char schemeCode[4];
+    int yearOfStudy;
+    int numberOfStudents;
+    int numberOfCoreModules;
 
+} Schemes;
 
-Module * readModules(void);
+int numberOfModules;
+
+char *getFolder();
+Module * readModules(char *file);
 void menuLoop(void);
