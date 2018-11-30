@@ -4,24 +4,27 @@
 #include <memory.h>
 #include "functions.h"
 
-Module *readModules(void) {
+char *getFolder() {
     int maxInputSize = 100;
     char *fileDirectory = malloc((size_t) maxInputSize);
     printf("Enter the directory name of timetable files: ");
     scanf("%s", fileDirectory);
+    return fileDirectory;
+    //
+}
+
+/**
+ * Create an array of modules (structs)
+ * @param file the file containing all module details
+ * @return an array of struct Modules
+ */
+Module * readModules(char *file){
     //create string directory path for modules.txt
-    char *modules = "";
-    if((modules = malloc(strlen(fileDirectory)+strlen(modules)+1)) != NULL){
-        modules[0] = '\0';   // ensures the memory is an empty string
-        modules = strcat(fileDirectory,"\\modules.txt"); //TODO this will be OS specific - but program tested on linux environment so change to '/modules.txt'
-    } else {
-        perror("malloc failed!\n");
-        exit(-1);
-    }
+    char *modules = strcat(file,"/modules.txt"); //TODO this will be OS specific
     //attempt to open the modules.txt file in the user specified directory path
-    FILE *file = fopen(modules, "r");
+    FILE *fileDirectory = fopen(modules, "r");
     if(file == NULL) {
-        perror("Error opening file");
+        perror("Error opening file: 'modules.txt' ");
         exit(-1);
     }
     //each module has all four variables:
@@ -29,33 +32,103 @@ Module *readModules(void) {
     int semester;
     char lectureAmountAndHr[4];
     char pracAmountAndHr[4];
-
-    //find the number of modules (lines) in the file
-    int numberOfModules = 0;
-    while(!feof(file)){
-        int ch =  fgetc(file);
+    //find number of modules (lines) in the file
+    numberOfModules = 0;
+    while(!feof(fileDirectory)){
+        int ch =  fgetc(fileDirectory);
         if(ch == '\n'){
             numberOfModules++;
         }
     }
-    rewind(file); //go back to the beginning of the file
+    rewind(fileDirectory); //go back to the beginning of the file
     //create a dynamic array whose size is based of the numberOfModules currently added
-    Module *listOfModules[numberOfModules];
-    //Module *listOfModules[numberOfModules];
+    //N.B calloc() assigns each element value to zero initially
+    Module *listOfModules = calloc((size_t) numberOfModules, (sizeof(Module) + 3));
     //iterate over each line in modules.txt to record each module
-    int moduleIterator = 0;
-    while(fscanf(file, "%s %d %s %s\n", moduleID, &semester, lectureAmountAndHr, pracAmountAndHr)!= EOF){
+    int moduleIndex = 0;
+    while(fscanf(fileDirectory, "%s %d %s %s\n", moduleID, &semester, lectureAmountAndHr, pracAmountAndHr)!= EOF){
         //allocate memory for a new instance of module
-        Module *module = malloc(sizeof(Module));
-        //assign each string sequence on the current line into the subsequent module variables
+        Module *module = malloc(sizeof(*module) + 3); //+ 3 for the 3 terminating characters in each char sequence
+        //assign all module information from .txt file to their subsequent struct (Module) values
         strcpy(module->moduleID, moduleID);
         module->semester = semester;
         strcpy(module->lectureAmountAndHr, lectureAmountAndHr);
         strcpy(module->pracAmountAndHr, pracAmountAndHr);
-        //add the instantiated struct to an array of pointers to structs
-        listOfModules[moduleIterator] = module;
-        moduleIterator++;
+        //add the instantiated struct to an array of structs
+        listOfModules[moduleIndex] = *module;
+        moduleIndex++;
+        //free the memory allocated to the new instance of Module to prevent memory leaks
+        free(module);
     }
-    malloc(sizeof(listOfModules)*numberOfModules);
-    return *listOfModules;
+    free(fileDirectory);
+    return listOfModules;
+}
+
+/**
+ * Create an array of schemes (structs)
+ * @param file the file containing all scheme details
+ * @return an array of schemes
+ */
+Scheme * readSchemes(char *file){
+    size_t length = strlen(file);
+    file[length-12] = '\0'; //remove "/modules.txt" from current file directory
+    char *schemes = strcat(file,"\\schemes.txt"); //TODO OS specific!
+    FILE *fileDirectory = fopen(schemes, "r");
+    if(fileDirectory == NULL) {
+        perror("Error opening file: 'schemes.txt' ");
+        exit(-1);
+    }
+
+    //find the total number of schemes in the text file
+    numberOfSchemes = 0;
+    while(!feof(fileDirectory)){
+        int ch =  fgetc(fileDirectory);
+        if(ch == '\n'){
+            numberOfSchemes++;
+        }
+    }
+    rewind(fileDirectory);
+    Scheme *listOfSchemes = calloc((size_t) numberOfSchemes, (sizeof(Scheme) + 1));
+    //iterate over each line in schemes.txt to record each module
+    int moduleIndex = 0;
+    while(!feof(fileDirectory)){
+        char schemeCode[4];
+        int yearOfStudy;
+        int numberOfStudents;
+        int numberOfCoreModules;
+        //allocate memory for a new instance of module
+        Scheme *scheme = malloc(sizeof(*scheme) + 1); //+ 3 for the 3 terminating characters in each char sequence
+        //assign all module information from .txt file to their subsequent struct (Module) values
+        fscanf(fileDirectory,"%s", schemeCode);
+        strcpy(scheme->schemeCode, schemeCode);
+        fscanf(fileDirectory,"%d", &yearOfStudy);
+        scheme->yearOfStudy = yearOfStudy;
+        fscanf(fileDirectory,"%d", &numberOfStudents);
+        scheme->numberOfStudents = numberOfStudents;
+        fscanf(fileDirectory, "%d", &numberOfCoreModules);
+        scheme->numberOfCoreModules = numberOfCoreModules;
+        // the size of the string of core modules is dependent on the numberOfCoreModules variable
+        char *coreModules[numberOfCoreModules];
+        //TODO create a struct for a core module node which holds its name and a pointer to the next struct
+        //instantiate a new coreModule struct
+        CoreModule *coreModule = malloc(sizeof(*coreModule) + 1);
+        if(numberOfCoreModules > 0){
+            for(int i = 0; i < numberOfCoreModules; i ++){
+                //create a substring which is one of the core moduleID's and then add it to the coreModule->moduleID
+                char moduleID[7];
+                strcpy()
+                coreModules[length-12] = '\0'; //remove "/modules.txt" from current file directory
+            }
+        }
+
+
+
+        //add the instantiated struct to an array of structs
+        listOfSchemes[moduleIndex] = *scheme;
+        moduleIndex++;
+        //free the memory allocated to the new instance of Module to prevent memory leaks
+        free(scheme);
+    }
+    free(fileDirectory);
+    return listOfSchemes;
 }
