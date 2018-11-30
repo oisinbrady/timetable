@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "parseFiles.h"
+#include "functions.h"
 int main() {
     char* folderPath = getFolder();
     Module *modulesList = readModules(folderPath);
