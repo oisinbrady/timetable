@@ -39,9 +39,9 @@ Module * readModules(char *file){
     rewind(fileDirectory); //go back to the beginning of the file
     //create a dynamic array whose size is based of the numberOfModules currently added
     //N.B calloc() assigns each element value to zero initially
-    Module *listOfModules = calloc((size_t) numberOfModules, (sizeof(Module) + 3)); //numberOfModules is not effecting the number of elements (remains 8 regardless)
+    Module *listOfModules = calloc((size_t) numberOfModules, (sizeof(Module) + 3));
     //iterate over each line in modules.txt to record each module
-    int moduleIterator = 0;
+    int moduleIndex = 0;
     while(fscanf(fileDirectory, "%s %d %s %s\n", moduleID, &semester, lectureAmountAndHr, pracAmountAndHr)!= EOF){
         //allocate memory for a new instance of module
         Module *module = malloc(sizeof(*module) + 3); //+ 3 for the 3 terminating characters in each char sequence
@@ -51,11 +51,59 @@ Module * readModules(char *file){
         strcpy(module->lectureAmountAndHr, lectureAmountAndHr);
         strcpy(module->pracAmountAndHr, pracAmountAndHr);
         //add the instantiated struct to an array of structs
-        listOfModules[moduleIterator] = *module;
-        moduleIterator++;
+        listOfModules[moduleIndex] = *module;
+        moduleIndex++;
         //free the memory allocated to the new instance of Module to prevent memory leaks
         free(module);
     }
     free(fileDirectory);
     return listOfModules;
+}
+
+Scheme * readSchemes(char *file){
+    char *schemes = strcat(file,"/schemes.txt");
+    FILE *fileDirectory = fopen(schemes, "r");
+    if(file == NULL) {
+        perror("Error opening file: 'schemes.txt' ");
+        exit(-1);
+    }
+    int x;
+    char schemeCode[4];
+    int yearOfStudy;
+    int numberOfStudents;
+    int numberOfCoreModules;
+    char coreModules[x]; //TODO
+    //find the total number of schemes in the text file
+    numberOfSchemes = 0;
+    while(!feof(fileDirectory)){
+        int ch =  fgetc(fileDirectory);
+        if(ch == '\n'){
+            numberOfSchemes++;
+        }
+    }
+    Scheme *listOfSchemes = calloc((size_t) numberOfSchemes, (sizeof(Scheme) + 3));
+    //iterate over each line in modules.txt to record each module
+    int moduleIndex = 0;
+    while(fscanf(fileDirectory, "%s %d %d %d %c \n", schemeCode, &yearOfStudy, &numberOfStudents, &numberOfCoreModules,
+                 coreModules)!= EOF){
+        //allocate memory for a new instance of module
+        Scheme *scheme = malloc(sizeof(*scheme) + 3); //+ 3 for the 3 terminating characters in each char sequence
+        //assign all module information from .txt file to their subsequent struct (Module) values
+        strcpy(scheme->schemeCode, schemeCode);
+        scheme->yearOfStudy = yearOfStudy;
+        scheme->numberOfStudents = numberOfStudents;
+        scheme->numberOfCoreModules = numberOfCoreModules;
+        //initialise an char array of size = numberOfCoreModules
+        char *coreModules = malloc((size_t) maxInputSize);      //TODO
+        scheme->coreModules = coreModules;
+
+
+        //add the instantiated struct to an array of structs
+        listOfSchemes[moduleIndex] = *scheme;
+        moduleIndex++;
+        //free the memory allocated to the new instance of Module to prevent memory leaks
+        free(scheme);
+    }
+    free(fileDirectory);
+    return listOfSchemes;
 }
