@@ -70,15 +70,14 @@ Module * readModules(char *file){
  * @return an array of schemes
  */
 Scheme * readSchemes(char *file){
-    size_t length = strlen(file);
-    file[length-12] = '\0'; //remove "/modules.txt" from current file directory
+    size_t fileLength = strlen(file);
+    file[fileLength-12] = '\0'; //remove "/modules.txt" from current file directory
     char *schemes = strcat(file,"\\schemes.txt"); //TODO OS specific!
     FILE *fileDirectory = fopen(schemes, "r");
     if(fileDirectory == NULL) {
         perror("Error opening file: 'schemes.txt' ");
         exit(-1);
     }
-
     //find the total number of schemes in the text file
     numberOfSchemes = 0;
     while(!feof(fileDirectory)){
@@ -108,7 +107,8 @@ Scheme * readSchemes(char *file){
         fscanf(fileDirectory, "%d", &numberOfCoreModules);
         scheme->numberOfCoreModules = numberOfCoreModules;
         // the size of the string of core modules is dependent on the numberOfCoreModules variable
-        char *coreModules[numberOfCoreModules];
+        char coreModules[(numberOfCoreModules*7)+11];
+        fgets(coreModules, sizeof(coreModules), fileDirectory);
         //TODO create a struct for a core module node which holds its name and a pointer to the next struct
         //instantiate a new coreModule struct
         CoreModule *coreModule = malloc(sizeof(*coreModule) + 1);
@@ -116,17 +116,17 @@ Scheme * readSchemes(char *file){
             for(int i = 0; i < numberOfCoreModules; i ++){
                 //create a substring which is one of the core moduleID's and then add it to the coreModule->moduleID
                 char moduleID[7];
-                strcpy()
-                coreModules[length-12] = '\0'; //remove "/modules.txt" from current file directory
+                strcpy(moduleID, &coreModules[sizeof(coreModules)-8]);
+                coreModules[sizeof(coreModules)-9] = '\0';
+                //coreModules[length-8] = '\0'; //remove "/modules.txt" from current file directory
             }
         }
-
-
 
         //add the instantiated struct to an array of structs
         listOfSchemes[moduleIndex] = *scheme;
         moduleIndex++;
-        //free the memory allocated to the new instance of Module to prevent memory leaks
+        //free the memory allocated to the new instance of Scheme and CoreModule to prevent memory leaks
+        free(coreModule);
         free(scheme);
     }
     free(fileDirectory);
