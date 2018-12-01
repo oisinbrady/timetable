@@ -1,3 +1,7 @@
+typedef int bool;
+#define true 1
+#define false 0
+
 int numberOfModules;
 int numberOfSchemes;
 typedef struct module{
@@ -6,17 +10,19 @@ typedef struct module{
     char lectureAmountAndHr[4];
     char pracAmountAndHr[4];
 } Module;
+
+typedef struct coreModule {
+    char moduleID[7];
+    struct coreModule *nextCoreModule;
+} CoreModule;
+
 typedef struct scheme{
     char schemeCode[4];
     int yearOfStudy;
     int numberOfStudents;
     int numberOfCoreModules;
-    char *coreModules; //pointer to the first core module in a linked list (header)
+    CoreModule *coreModule; //pointer to the first core module in a linked list (header)
 } Scheme;
-typedef struct coreModule{
-    char moduleID[7];
-    struct coreModule *nextCoreModule;
-} CoreModule;
 
 
 char *getFolder();
