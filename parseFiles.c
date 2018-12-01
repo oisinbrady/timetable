@@ -72,7 +72,7 @@ Module * readModules(char *file){
 Scheme * readSchemes(char *file){
     size_t fileLength = strlen(file);
     file[fileLength-12] = '\0'; //remove "/modules.txt" from current file directory
-    char *schemes = strcat(file,"\\schemes.txt"); //TODO OS specific!
+    char *schemes = strcat(file,"/schemes.txt"); //TODO OS specific!
     FILE *fileDirectory = fopen(schemes, "r");
     if(fileDirectory == NULL) {
         perror("Error opening file: 'schemes.txt' ");
