@@ -113,7 +113,7 @@ Scheme * readSchemes(char *file){
         if(numberOfCoreModules > 0){
             int currentModuleIndex = sizeof(coreModules) - 8;
             CoreModule *newCoreModule = malloc(sizeof(*newCoreModule) + 1);
-            CoreModule *current = malloc(sizeof(*newCoreModule) + 1);
+            CoreModule *current = malloc(sizeof(*current) + 1);
             bool header = false;
             for(int i = 0; i < numberOfCoreModules; i ++){
                 //create a substring which is one of the core moduleID's and then add it to the newCoreModule->moduleID
@@ -123,22 +123,20 @@ Scheme * readSchemes(char *file){
 
                 if (!header) { //create the header of the linked list if its not already made
                     strcpy(newCoreModule->moduleID, moduleID);
-                    newCoreModule->nextCoreModule = NULL;
                     header = true;
                     strcpy(headerModule->moduleID, newCoreModule->moduleID);
                     headerModule->nextCoreModule = NULL;
-                    scheme->coreModule = headerModule;//header = this core module
+                    scheme->coreModule = headerModule;//header of linked list = this core module
                     current = headerModule;
                 } else {
                     strcpy(newCoreModule->moduleID, moduleID);
                     newCoreModule->nextCoreModule = NULL;
                     current->nextCoreModule = newCoreModule;
-                    current = newCoreModule;
-
+                    current = current->nextCoreModule;
                 }
 
+
             }
-            scheme->coreModule = headerModule;
             free(newCoreModule);
             free(current);
         }
