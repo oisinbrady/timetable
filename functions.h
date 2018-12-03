@@ -1,11 +1,7 @@
-typedef int bool;
-#define true 1
-#define false 0
-
 int numberOfModules;
 int numberOfSchemes;
 typedef struct module{
-    char moduleID[7];
+    char moduleID[7]; //TODO increment these char arrays to account for terminating character?
     int semester;
     char lectureAmountAndHr[4];
     char pracAmountAndHr[4];
@@ -17,7 +13,7 @@ typedef struct coreModule {
 } CoreModule;
 
 typedef struct scheme{
-    char schemeCode[4];
+    char schemeCode[5];
     int yearOfStudy;
     int numberOfStudents;
     int numberOfCoreModules;
@@ -28,4 +24,5 @@ typedef struct scheme{
 char *getFolder();
 Module * readModules(char *file);
 Scheme * readSchemes(char *file);
+void push(CoreModule *header, char *moduleID);
 void menuLoop(void);

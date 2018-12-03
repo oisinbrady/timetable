@@ -1,6 +1,7 @@
 #include <malloc.h>
 #include <memory.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "functions.h"
 
 char *getFolder() {
@@ -71,7 +72,7 @@ Module * readModules(char *file){
 Scheme * readSchemes(char *file){
     size_t fileLength = strlen(file);
     file[fileLength-12] = '\0'; //remove "/modules.txt" from current file directory
-    char *schemes = strcat(file,"/schemes.txt"); //TODO OS specific!
+    char *schemes = strcat(file,"\\schemes.txt"); //TODO OS specific!
     FILE *fileDirectory = fopen(schemes, "r");
     if(fileDirectory == NULL) {
         perror("Error opening file: 'schemes.txt' ");
@@ -90,7 +91,7 @@ Scheme * readSchemes(char *file){
     //iterate over each line in schemes.txt to record each module
     int moduleIndex = 0;
     while(!feof(fileDirectory)){
-        char schemeCode[4];
+        char schemeCode[5];
         int yearOfStudy;
         int numberOfStudents;
         int numberOfCoreModules;
@@ -108,49 +109,32 @@ Scheme * readSchemes(char *file){
         // the size of the string of core modules is dependent on the numberOfCoreModules variable
         char coreModules[(numberOfCoreModules*7)+11];
         fgets(coreModules, sizeof(coreModules), fileDirectory);//retrieve the remaining characters on the line
-        //TODO create a struct for a core module node which holds its name and a pointer to the next struct
         //instantiate a new newCoreModule struct
-        CoreModule *head = malloc(sizeof(head) + 1);
         char *moduleID = malloc(sizeof(char *) * 7);
+        //create a new module struct
+        CoreModule *newCoreModule = malloc(sizeof(*newCoreModule) + 1);
+        scheme->coreModule = NULL;
         if(numberOfCoreModules > 0){
             int currentModuleIndex = sizeof(coreModules) - 8;
-            CoreModule *newCoreModule = malloc(sizeof(*newCoreModule) + 1);
-            CoreModule *tail = malloc(sizeof(*tail) + 1);
-            bool header = false;
             for(int i = 0; i < numberOfCoreModules; i ++){
                 //create a substring which is one of the core moduleID's and then add it to the newCoreModule->moduleID
                 strcpy(moduleID, &coreModules[currentModuleIndex]);
                 coreModules[currentModuleIndex - 1] = '\0';
                 currentModuleIndex -= 8;
-
-                if (!header) { //create the header of the linked list if its not already made
-                    strcpy(newCoreModule->moduleID, moduleID);
-                    header = true;
-                    strcpy(head->moduleID, newCoreModule->moduleID);
-                    head->nextCoreModule = NULL;
-                    scheme->coreModule = head;//header of linked list = this core module
-                    tail = head; //tail and head originally point to the same struct
-                } else {
-                    strcpy(newCoreModule->moduleID, moduleID);
-                    newCoreModule->nextCoreModule = NULL;
-                    tail->nextCoreModule = newCoreModule; //current tail points to new struct
-                    tail = tail->nextCoreModule; //tail is now the new struct
-                }
-
-
+                //assign the module's ID
+                strcpy(newCoreModule->moduleID, moduleID);
+                newCoreModule->nextCoreModule = scheme->coreModule;
+                scheme->coreModule = newCoreModule; //the new core module is now the array
             }
-            free(newCoreModule);
-            free(tail);
         }
-
         //add the instantiated struct to an array of structs
         listOfSchemes[moduleIndex] = *scheme;
         moduleIndex++;
         //free the memory allocated to the new instance of Scheme, CoreModule & moduleID to prevent memory leaks
         free(moduleID);
-        free(head);
         free(scheme);
     }
     free(fileDirectory);
     return listOfSchemes;
 }
+
