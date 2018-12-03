@@ -20,13 +20,9 @@ char *getFolder() {
  */
 Module * readModules(char *file){
     //create string directory path for modules.txt
-    char *modules = strcat(file,"/modules.txt"); //TODO this will be OS specific
+    char*modules = strcat(file,"/modules.txt"); //TODO this will be OS specific
     //attempt to open the modules.txt file in the user specified directory path
     FILE *fileDirectory = fopen(modules, "r");
-    if(file == NULL) {
-        perror("Error opening file: 'modules.txt' ");
-        exit(-1);
-    }
     //each module has all four variables:
     char moduleID[8];
     int semester;
@@ -72,12 +68,8 @@ Module * readModules(char *file){
 Scheme * readSchemes(char *file){
     size_t fileLength = strlen(file);
     file[fileLength-12] = '\0'; //remove "/modules.txt" from current file directory
-    char *schemes = strcat(file,"\\schemes.txt"); //TODO OS specific!
+    char *schemes = strcat(file,"/schemes.txt"); //TODO OS specific!
     FILE *fileDirectory = fopen(schemes, "r");
-    if(fileDirectory == NULL) {
-        perror("Error opening file: 'schemes.txt' ");
-        exit(-1);
-    }
     //find the total number of schemes in the text file
     numberOfSchemes = 0;
     while(!feof(fileDirectory)){
@@ -139,17 +131,15 @@ Scheme * readSchemes(char *file){
 }
 
 int ** readTimes(char *file) {
+    size_t fileLength = strlen(file);
+    file[fileLength-12] = '\0';
     //create string directory path for modules.txt
-    char *modules = strcat(file, "\\times.txt"); //TODO this will be OS specific
+    char *teachingTimes = strcat(file, "/times.txt"); //TODO this will be OS specific
     //attempt to open the modules.txt file in the user specified directory path
-    FILE *fileDirectory = fopen(modules, "r");
-    if (file == NULL) {
-        perror("Error opening file: 'times.txt' ");
-        exit(-1);
-    }
+    FILE *fileDirectory = fopen(teachingTimes, "r");
     //Teaching times have two variables: the day(Mon-Sun) & the teaching hours(9-6)
     int* times = calloc(7*9, sizeof(int));
-    int* times = calloc(7*9, sizeof(int));
+    //int* times = calloc(7*9, sizeof(int));
     int day[7];
     int teachingHour[9];
 
