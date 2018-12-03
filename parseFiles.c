@@ -1,4 +1,6 @@
 #include <malloc.h>
+#include <memory.h>
+#include <stdlib.h>
 #include "functions.h"
 
 char *getFolder() {
