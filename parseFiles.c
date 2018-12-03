@@ -108,12 +108,12 @@ Scheme * readSchemes(char *file){
         fgets(coreModules, sizeof(coreModules), fileDirectory);//retrieve the remaining characters on the line
         //TODO create a struct for a core module node which holds its name and a pointer to the next struct
         //instantiate a new newCoreModule struct
-        CoreModule *headerModule = malloc(sizeof(headerModule) + 1);
+        CoreModule *head = malloc(sizeof(head) + 1);
         char *moduleID = malloc(sizeof(char *) * 7);
         if(numberOfCoreModules > 0){
             int currentModuleIndex = sizeof(coreModules) - 8;
             CoreModule *newCoreModule = malloc(sizeof(*newCoreModule) + 1);
-            CoreModule *current = malloc(sizeof(*current) + 1);
+            CoreModule *tail = malloc(sizeof(*tail) + 1);
             bool header = false;
             for(int i = 0; i < numberOfCoreModules; i ++){
                 //create a substring which is one of the core moduleID's and then add it to the newCoreModule->moduleID
@@ -124,21 +124,21 @@ Scheme * readSchemes(char *file){
                 if (!header) { //create the header of the linked list if its not already made
                     strcpy(newCoreModule->moduleID, moduleID);
                     header = true;
-                    strcpy(headerModule->moduleID, newCoreModule->moduleID);
-                    headerModule->nextCoreModule = NULL;
-                    scheme->coreModule = headerModule;//header of linked list = this core module
-                    current = headerModule;
+                    strcpy(head->moduleID, newCoreModule->moduleID);
+                    head->nextCoreModule = NULL;
+                    scheme->coreModule = head;//header of linked list = this core module
+                    tail = head; //tail and head originally point to the same struct
                 } else {
                     strcpy(newCoreModule->moduleID, moduleID);
                     newCoreModule->nextCoreModule = NULL;
-                    current->nextCoreModule = newCoreModule;
-                    current = current->nextCoreModule;
+                    tail->nextCoreModule = newCoreModule; //current tail points to new struct
+                    tail = tail->nextCoreModule; //tail is now the new struct
                 }
 
 
             }
             free(newCoreModule);
-            free(current);
+            free(tail);
         }
 
         //add the instantiated struct to an array of structs
@@ -146,7 +146,7 @@ Scheme * readSchemes(char *file){
         moduleIndex++;
         //free the memory allocated to the new instance of Scheme, CoreModule & moduleID to prevent memory leaks
         free(moduleID);
-        free(headerModule);
+        free(head);
         free(scheme);
     }
     free(fileDirectory);
