@@ -4,6 +4,7 @@ int main() {
     char* folderPath = getFolder();
     Module *modulesList = readModules(folderPath);
     Scheme *schemesList  = readSchemes(folderPath);
+    int ** teachingTimes = readTimes(folderPath);
     return 0;
 }
 

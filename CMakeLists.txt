@@ -5,5 +5,4 @@ set(CMAKE_C_STANDARD 11)
 
 add_executable(timetable main.c
         parseFiles.c
-        coreModulesLinkedList.c
         functions.h)

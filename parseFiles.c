@@ -138,3 +138,19 @@ Scheme * readSchemes(char *file){
     return listOfSchemes;
 }
 
+int ** readTimes(char *file) {
+    //create string directory path for modules.txt
+    char *modules = strcat(file, "\\times.txt"); //TODO this will be OS specific
+    //attempt to open the modules.txt file in the user specified directory path
+    FILE *fileDirectory = fopen(modules, "r");
+    if (file == NULL) {
+        perror("Error opening file: 'times.txt' ");
+        exit(-1);
+    }
+    //Teaching times have two variables: the day(Mon-Sun) & the teaching hours(9-6)
+    int* times = calloc(7*9, sizeof(int));
+    int* times = calloc(7*9, sizeof(int));
+    int day[7];
+    int teachingHour[9];
+
+}

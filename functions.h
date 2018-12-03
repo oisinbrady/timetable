@@ -20,9 +20,9 @@ typedef struct scheme{
     CoreModule *coreModule; //pointer to the first core module in a linked list (header)
 } Scheme;
 
-
 char *getFolder();
 Module * readModules(char *file);
 Scheme * readSchemes(char *file);
+int ** readTimes(char *file); //7 days a week w/ a max of 9 hours teaching/day
 void push(CoreModule *header, char *moduleID);
 void menuLoop(void);
