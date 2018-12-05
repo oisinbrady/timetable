@@ -103,12 +103,13 @@ Scheme * readSchemes(char *file){
         fgets(coreModules, sizeof(coreModules), fileDirectory);//retrieve the remaining characters on the line
         //instantiate a new newCoreModule struct
         char *moduleID = malloc(sizeof(char *) * 7);
-        //create a new module struct
-        CoreModule *newCoreModule = malloc(sizeof(*newCoreModule) + 1);
+
         scheme->coreModule = NULL;
         if(numberOfCoreModules > 0){
             int currentModuleIndex = sizeof(coreModules) - 8;
             for(int i = 0; i < numberOfCoreModules; i ++){
+                //create a new module struct
+                CoreModule *newCoreModule = malloc(sizeof(*newCoreModule) + 1);
                 //create a substring which is one of the core moduleID's and then add it to the newCoreModule->moduleID
                 strcpy(moduleID, &coreModules[currentModuleIndex]);
                 coreModules[currentModuleIndex - 1] = '\0';

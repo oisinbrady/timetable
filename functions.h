@@ -1,3 +1,6 @@
+typedef int bool;
+#define true 1
+#define false 0
 int numberOfModules;
 int numberOfSchemes;
 typedef struct module{
@@ -24,5 +27,4 @@ char *getFolder();
 Module * readModules(char *file);
 Scheme * readSchemes(char *file);
 int ** readTimes(char *file); //7 days a week w/ a max of 9 hours teaching/day
-void push(CoreModule *header, char *moduleID);
-void menuLoop(void);
+void moduleInfo(Module * modulesList, Scheme * schemesList);
