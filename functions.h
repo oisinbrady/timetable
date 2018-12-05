@@ -26,5 +26,5 @@ typedef struct scheme{
 char *getFolder();
 Module * readModules(char *file);
 Scheme * readSchemes(char *file);
-int ** readTimes(char *file); //7 days a week w/ a max of 9 hours teaching/day
+int * readTimes(char *file); //7 days a week w/ a max of 9 hours teaching/day
 void moduleInfo(Module * modulesList, Scheme * schemesList);

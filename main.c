@@ -5,7 +5,7 @@ int main() {
     Module *modulesList = readModules(folderPath);
     Scheme *schemesList  = readSchemes(folderPath);
     moduleInfo(modulesList, schemesList);
-    //int ** teachingTimes = readTimes(folderPath);
+    int ** teachingTimes = readTimes(folderPath);
     return 0;
 }
 
