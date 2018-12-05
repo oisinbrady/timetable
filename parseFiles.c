@@ -131,7 +131,7 @@ Scheme * readSchemes(char *file){
     return listOfSchemes;
 }
 
-int * readTimes(char *file) {
+int ** readTimes(char *file) {
     size_t fileLength = strlen(file);
     file[fileLength-12] = '\0';
     //create string directory path for modules.txt
@@ -142,7 +142,7 @@ int * readTimes(char *file) {
     int r = 7; //Monday - Sunday
     int c = 9; //9 available teaching slots per day
     //assign a dynamic 2d array
-    int * times[r];
+    int ** times = (int **)malloc(r * sizeof(int *));
     for (int i = 0; i < r; ++i) {
         times[i] = (int *)calloc(c * sizeof(int) ,sizeof(int));
     }
@@ -151,14 +151,25 @@ int * readTimes(char *file) {
     int nextSession;
     for (int i = 0; i < r ; ++i) {
         fscanf(fileDirectory, "%*s %d", &teachingSlotsUsed);
+        fscanf(fileDirectory, "%d", &currentSession);
+        fscanf(fileDirectory, "%d", &nextSession);
         for (int j = 0; j < teachingSlotsUsed; ++j) {
-            fscanf(fileDirectory, "%d", &currentSession);
-            fscanf(fileDirectory, "%d", &nextSession);
+
             //if the teaching slot is 1 hour long
             if(nextSession - currentSession < 2){
                 times[i][currentSession - 9] = 1; //element contents dictate the length of the session
             }
-
+            else{
+                times[i][currentSession - 9] = 2;
+            }
+            currentSession = nextSession;
+            fscanf(fileDirectory, "%d", &nextSession);
         }
     }
+    return times;
+    //test print 2d array
+    /*
+    */
+
+
 }
