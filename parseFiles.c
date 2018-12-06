@@ -116,6 +116,8 @@ Scheme * readSchemes(char *file){
                 currentModuleIndex -= 8;
                 //assign the module's ID
                 strcpy(newCoreModule->moduleID, moduleID);
+
+                //TODO loop through modules and find the current module and then add its semester value to coreModule.semester
                 newCoreModule->nextCoreModule = scheme->coreModule;
                 scheme->coreModule = newCoreModule; //the new core module is now the array
             }

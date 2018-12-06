@@ -12,6 +12,7 @@ typedef struct module{
 
 typedef struct coreModule {
     char moduleID[7];
+    int semester;
     struct coreModule *nextCoreModule;
 } CoreModule;
 
@@ -22,6 +23,7 @@ typedef struct scheme{
     int numberOfCoreModules;
     CoreModule *coreModule; //pointer to the first core module in a linked list (header)
 } Scheme;
+
 
 char *getFolder();
 Module * readModules(char *file);
