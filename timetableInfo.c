@@ -24,9 +24,15 @@ void moduleInfo(Module * modulesList, Scheme * schemesList){
                 printf("%d \n", schemesList[i].numberOfStudents);
                 found = true;
                 printf("\nClashing modules: \n");
-                //print all modules in the scheme except the current module entered (these are clashes)
-                for(int k = 0; k < coreModuleIndex; k++){
-                    printf("%s \n", (char *) schemesList[k].coreModule);
+                //print all modules clashes
+                for(int k = 0; k < coreModuleIndex; k++){ //TODO if the core module is in the same scheme and same semester as the entered module then print it
+                    //for(int l = 0; l <numberOfModules; l++){
+                        //if(strcmp(modulesList[l].moduleID, (char *) schemesList[k].coreModule) == 0){
+                          //  if(modulesList[l].semester == schemesList[k].coreModule)
+                        //}
+                            printf("%s \n", (char *) schemesList[k].coreModule);
+                    //}
+
                 }
                 for(int l = coreModuleIndex + 1; l < schemesList[i].numberOfStudents; l++){
                     printf("%s \n", (char *) schemesList[l].coreModule);

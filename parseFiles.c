@@ -167,9 +167,4 @@ int ** readTimes(char *file) {
         }
     }
     return times;
-    //test print 2d array
-    /*
-    */
-
-
 }
