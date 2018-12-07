@@ -65,7 +65,7 @@ Module * readModules(char *file){
  * @param file the file containing all scheme details
  * @return an array of schemes
  */
-Scheme * readSchemes(char *file){
+Scheme * readSchemes(char *file, Module *modulesList){
     size_t fileLength = strlen(file);
     file[fileLength-12] = '\0'; //remove "/modules.txt" from current file directory
     char *schemes = strcat(file,"/schemes.txt"); //TODO OS specific!
@@ -116,8 +116,12 @@ Scheme * readSchemes(char *file){
                 currentModuleIndex -= 8;
                 //assign the module's ID
                 strcpy(newCoreModule->moduleID, moduleID);
-
-                //TODO loop through modules and find the current module and then add its semester value to coreModule.semester
+                //add semester value to each core module
+                for(int j = 0; j < numberOfModules; j++){
+                    if(strncmp(moduleID, modulesList[j].moduleID, 7) == 0){
+                        newCoreModule->semester = modulesList[j].semester;
+                    }
+                }
                 newCoreModule->nextCoreModule = scheme->coreModule;
                 scheme->coreModule = newCoreModule; //the new core module is now the array
             }

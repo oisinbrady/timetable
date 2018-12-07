@@ -3,7 +3,7 @@
 int main() {
     char* folderPath = getFolder();
     Module *modulesList = readModules(folderPath);
-    Scheme *schemesList  = readSchemes(folderPath);
+    Scheme *schemesList  = readSchemes(folderPath, modulesList);
     moduleInfo(modulesList, schemesList);
     int **teachingTimes = readTimes(folderPath);
     buildTimetable(modulesList, schemesList, teachingTimes);
