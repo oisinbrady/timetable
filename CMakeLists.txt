@@ -4,5 +4,7 @@ project(timetable C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(timetable main.c
-        functions.c
+        parseFiles.c
+        timetableInfo.c
+        buildTimetable.c
         functions.h)
