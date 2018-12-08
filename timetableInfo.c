@@ -55,46 +55,58 @@ void moduleInfo(Module * modulesList, Scheme * schemesList){
     int numberOfStudents = 0;
     printf("Enter a module code: ");
     scanf("%s", moduleID);
-
-    for(int i = 0; i < numberOfModules; i++){
+    bool moduleExists = false;
+    for (int i = 0; i < numberOfModules; ++i) {
         if(strncmp(moduleID, modulesList[i].moduleID, 7) == 0){
-            printf("Semester: %d\n",modulesList[i].semester);
-            printf("Number of lectures: %.1s \n", modulesList[i].lectureAmountAndHr);
-            printf("Length of lectures: %s \n", modulesList[i].lectureAmountAndHr + strlen(modulesList[i].lectureAmountAndHr) - 1);
-            printf("Number of practicals: %.1s \n", modulesList[i].pracAmountAndHr);
-            printf("Length of practicals: %s \n", modulesList[i].pracAmountAndHr + strlen(modulesList[i].pracAmountAndHr) - 1);
-            semester = modulesList[i].semester;
+            moduleExists = true;
             break;
         }
     }
-
-    //find the number of students that are sitting the entered module
-
-    bool clashArrayInit = false;
-    for(int i = 0; i <= numberOfSchemes; i++) {
-        CoreModule *currentCoreModule = schemesList[i].coreModule;
-        CoreModule *clashes = malloc(sizeof(clashes));
-        for (int j = 0; j < schemesList[i].numberOfCoreModules ; ++j) {
-            if(strncmp(moduleID, currentCoreModule->moduleID,7) == 0) { //find any schemes with the entered moduleID
-                numberOfStudents += schemesList[i].numberOfStudents;
-                //TODO add all core modules in the same semester to data type holding all clashing modules
-                Scheme currentScheme = schemesList[i];
-                if(!clashArrayInit){
-                    initialiseClashArray(currentScheme, semester, moduleID);
-                    clashArrayInit = true;
-                    currentCoreModule = currentCoreModule->nextCoreModule;
-                    continue;
-                }
-                addClash(currentScheme, semester, moduleID);
+    if(moduleExists){
+        for(int i = 0; i < numberOfModules; i++){
+            if(strncmp(moduleID, modulesList[i].moduleID, 7) == 0){
+                printf("Semester: %d\n",modulesList[i].semester);
+                printf("Number of lectures: %.1s \n", modulesList[i].lectureAmountAndHr);
+                printf("Length of lectures: %s \n", modulesList[i].lectureAmountAndHr + strlen(modulesList[i].lectureAmountAndHr) - 1);
+                printf("Number of practicals: %.1s \n", modulesList[i].pracAmountAndHr);
+                printf("Length of practicals: %s \n", modulesList[i].pracAmountAndHr + strlen(modulesList[i].pracAmountAndHr) - 1);
+                semester = modulesList[i].semester;
+                break;
             }
-            currentCoreModule = currentCoreModule->nextCoreModule;
         }
+
+        //find the number of students that are sitting the entered module
+
+        bool clashArrayInit = false;
+        for(int i = 0; i <= numberOfSchemes; i++) {
+            CoreModule *currentCoreModule = schemesList[i].coreModule;
+            CoreModule *clashes = malloc(sizeof(clashes));
+            for (int j = 0; j < schemesList[i].numberOfCoreModules ; ++j) {
+                if(strncmp(moduleID, currentCoreModule->moduleID,7) == 0) { //find any schemes with the entered moduleID
+                    numberOfStudents += schemesList[i].numberOfStudents;
+                    //TODO add all core modules in the same semester to data type holding all clashing modules
+                    Scheme currentScheme = schemesList[i];
+                    if(!clashArrayInit){
+                        initialiseClashArray(currentScheme, semester, moduleID);
+                        clashArrayInit = true;
+                        currentCoreModule = currentCoreModule->nextCoreModule;
+                        continue;
+                    }
+                    addClash(currentScheme, semester, moduleID);
+                }
+                currentCoreModule = currentCoreModule->nextCoreModule;
+            }
+        }
+        printf("Number of students: %d \n", numberOfStudents);
+        printf("Clashing modules: ");
+        for(int i = 0; i< sizeof(clashArray)/ sizeof(clashArray[0]); i++){
+            printf("%s ", clashArray[i]);
+        }
+        printf("\n");
     }
-    printf("Number of students: %d \n", numberOfStudents);
-    printf("Clashing modules: ");
-    for(int i = 0; i< sizeof(clashArray)/ sizeof(clashArray[0]); i++){
-        printf("%s ", clashArray[i]);
+    else{
+        printf("This module does not exist (this is a case sensitive search)\n");
     }
-    printf("\n");
+
 }
 

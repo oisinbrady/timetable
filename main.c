@@ -2,26 +2,29 @@
 #include <stdlib.h>
 #include "functions.h"
 
+void printMenu(){
+    printf("\nOptions: \n1 = query module\n2 = make timetable\n3 = quit\n");
+}
+
 void menuLoop(Module *modulesList, Scheme *schemesList, int **teachingTimes){
     printf("-------------------------------------------------------------");
-    printf("\nOptions: \n1 = query module\n2 = make timetable\n3 = quit\n");
+    printMenu();
     int option;
-    scanf("%d", &option);
     while(true){
+        scanf("%d", &option);
         switch(option){
             case 1:
                 moduleInfo(modulesList, schemesList);
-                menuLoop(modulesList, schemesList, teachingTimes);
                 break;
             case 2:
                 buildTimetable(modulesList, schemesList, teachingTimes);
-                menuLoop(modulesList, schemesList, teachingTimes);
                 break;
             case 3:
                 exit(0); //TODO this does not work...
                 //abort();
             default: printf("Invalid input!");
         }
+        printf("-------------------------------------------------------------\n");
    }
 }
 
@@ -39,7 +42,7 @@ int main(int argc, char*argv[]) {
 
 
 
-
+//PRINT TESTS//
 
 /*for (int i = 0; i < 95; i++){
 printf("%s \n", schemesList[i].schemeCode);

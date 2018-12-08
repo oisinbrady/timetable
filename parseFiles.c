@@ -5,15 +5,14 @@
 #include "functions.h"
 
 char *getFolder(char* argv[]) {
-    int maxInputSize = 100;
+    int maxInputSize = 20;
     char *fileName = malloc((size_t) maxInputSize);
     printf("Enter the directory name of timetable files: ");
     scanf("%s", fileName);
-    char *realFileName = malloc((size_t) maxInputSize);
-    realFileName[0] = '/';
-    fileName = strcat(realFileName, fileName);
-    char* filePath = strcat(argv[0],fileName);
-    return filePath;
+    //char *realFileName = malloc((size_t) maxInputSize);
+    //realFileName[0] = '/';
+    //fileName = strcat(realFileName, fileName);
+    return fileName;
     //
 }
 

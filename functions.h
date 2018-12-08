@@ -1,3 +1,4 @@
+char *fileName;
 typedef int bool;
 #define true 1
 #define false 0
@@ -34,4 +35,5 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
 void moduleInfo(Module * modulesList, Scheme * schemesList);
 void initialiseClashArray(Scheme scheme, int semester, const char *moduleID);
 void addClash(Scheme scheme, int semester, const char *moduleID);
+void printMenu(void);
 void menuLoop(Module *moduleList, Scheme *schemsList, int **teachingTimes);
