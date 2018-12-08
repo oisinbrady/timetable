@@ -22,6 +22,10 @@ typedef struct scheme{
     int numberOfCoreModules;
     CoreModule *coreModule; //pointer to the first core module in a linked list (header)
 } Scheme;
+typedef struct timetableCell{
+    bool available; //if the teaching slot (timetable cell) is available or not (based of times.txt / teachingTimes[][])
+    struct coreModule *nextCoreModule; //A list of lectures/practicals for a particular day
+}TimeTableCell;
 char *getFolder(void);
 Module * readModules(char *file);
 Scheme * readSchemes(char *file, Module *modulesList);
