@@ -1,11 +1,10 @@
-char *fileName;
 typedef int bool;
 #define true 1
 #define false 0
 int numberOfModules;
 int numberOfSchemes;
 typedef struct module{
-    char moduleID[7]; //TODO increment these char arrays to account for terminating character?
+    char moduleID[7];
     int semester;
     char lectureAmountAndHr[4];
     char pracAmountAndHr[4];
@@ -26,14 +25,14 @@ typedef struct scheme{
 } Scheme;
 char clashArray[100][8];
 
-char *getFolder(char* argv[]);
+char *getFolder(void);
 Module * readModules(char *file);
 Scheme * readSchemes(char *file, Module *modulesList);
 int ** readTimes(char *file); //7 days a week w/ a max of 9 hours teaching/day
 
 void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTimeSlots);
-void moduleInfo(Module * modulesList, Scheme * schemesList);
+void moduleInfo(Module * modulesList, int ** teachingTimes, Scheme * schemesList);
 void initialiseClashArray(Scheme scheme, int semester, const char *moduleID);
 void addClash(Scheme scheme, int semester, const char *moduleID);
 void printMenu(void);
-void menuLoop(Module *moduleList, Scheme *schemsList, int **teachingTimes);
+void menuLoop(Module *moduleList, Scheme *schemesList, int **teachingTimes);

@@ -7,14 +7,15 @@ void printMenu(){
 }
 
 void menuLoop(Module *modulesList, Scheme *schemesList, int **teachingTimes){
-    printf("-------------------------------------------------------------");
+    printf("--------------------------------------------------------------------------");
     printMenu();
     int option;
     while(true){
-        scanf("%d", &option); //TODO unexpected behaviour if first input is random
+        printf("Enter Option: \n");
+        scanf(" %d", &option); //TODO unexpected behaviour if first input is random
         switch(option){
             case 1:
-                moduleInfo(modulesList, schemesList);
+                moduleInfo(modulesList, teachingTimes, schemesList);
                 break;
             case 2:
                 buildTimetable(modulesList, schemesList, teachingTimes);
@@ -24,12 +25,12 @@ void menuLoop(Module *modulesList, Scheme *schemesList, int **teachingTimes){
                 //abort();
             default: printf("Invalid input!");
         }
-        printf("-------------------------------------------------------------\n");
+        printf("--------------------------------------------------------------------------\n");
    }
 }
 
-int main(int argc, char*argv[]) {
-    char* folderPath = getFolder(argv);
+int main() {
+    char* folderPath = getFolder();
     Module *modulesList = readModules(folderPath);
     Scheme *schemesList  = readSchemes(folderPath, modulesList);
     int **teachingTimes = readTimes(folderPath);

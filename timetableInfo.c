@@ -49,7 +49,7 @@ void addClash(Scheme scheme, int semester, const char *moduleID){
     }
 }
 
-void moduleInfo(Module * modulesList, Scheme * schemesList){
+void moduleInfo(Module * modulesList, int ** teachingTimes, Scheme * schemesList){
     char moduleID[7];
     int semester = 0;
     int numberOfStudents = 0;
@@ -107,6 +107,38 @@ void moduleInfo(Module * modulesList, Scheme * schemesList){
     else{
         printf("This module does not exist (this is a case sensitive search)\n");
     }
-
+    printf("\nAvailable slots for teaching on a particular day are indicated by 1\n");
+    //print out available teaching times
+    printf("\n\t9:00\t10:00\t11:00\t12:00\t13:00\t14:00\t15:00\t16:00\t17:00");
+    for (int i = 0; i <  7; i++){
+        printf("\n");
+        switch(i){
+            case 0:
+                printf("Mon");
+                break;
+            case 1:
+                printf("Tue");
+                break;
+            case 2:
+                printf("Wed");
+                break;
+            case 3:
+                printf("Thu");
+                break;
+            case 4:
+                printf("Fri");
+                break;
+            case 5:
+                printf("Sat");
+                break;
+            case 6:
+                printf("Sun");
+                break;
+        }
+        for (int j = 0; j < 9; j++) {
+            printf("\t  %d\t", teachingTimes[i][j]);
+        }
+    }
+    printf("\n");
 }
 
