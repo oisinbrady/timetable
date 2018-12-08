@@ -24,7 +24,7 @@ void menuLoop(Module *modulesList, Scheme *schemesList, int **teachingTimes){
                 //abort();
             default: printf("Invalid input!");
         }
-        printf("-------------------------------------------------------------\n");
+        printf("--------------------------------------------------------------\n");
    }
 }
 
