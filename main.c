@@ -1,12 +1,36 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "functions.h"
-int main() {
-    char* folderPath = getFolder();
+
+void menuLoop(Module *modulesList, Scheme *schemesList, int **teachingTimes){
+    printf("-------------------------------------------------------------");
+    printf("\nOptions: \n1 = query module\n2 = make timetable\n3 = quit\n");
+    int option;
+    scanf("%d", &option);
+    while(true){
+        switch(option){
+            case 1:
+                moduleInfo(modulesList, schemesList);
+                menuLoop(modulesList, schemesList, teachingTimes);
+                break;
+            case 2:
+                buildTimetable(modulesList, schemesList, teachingTimes);
+                menuLoop(modulesList, schemesList, teachingTimes);
+                break;
+            case 3:
+                exit(0); //TODO this does not work...
+                //abort();
+            default: printf("Invalid input!");
+        }
+   }
+}
+
+int main(int argc, char*argv[]) {
+    char* folderPath = getFolder(argv);
     Module *modulesList = readModules(folderPath);
     Scheme *schemesList  = readSchemes(folderPath, modulesList);
-    moduleInfo(modulesList, schemesList);
     int **teachingTimes = readTimes(folderPath);
-    buildTimetable(modulesList, schemesList, teachingTimes);
+    menuLoop(modulesList, schemesList, teachingTimes);
     return 0;
 }
 

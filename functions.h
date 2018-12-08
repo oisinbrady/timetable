@@ -25,7 +25,7 @@ typedef struct scheme{
 } Scheme;
 char clashArray[100][8];
 
-char *getFolder();
+char *getFolder(char* argv[]);
 Module * readModules(char *file);
 Scheme * readSchemes(char *file, Module *modulesList);
 int ** readTimes(char *file); //7 days a week w/ a max of 9 hours teaching/day
@@ -34,3 +34,4 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
 void moduleInfo(Module * modulesList, Scheme * schemesList);
 void initialiseClashArray(Scheme scheme, int semester, const char *moduleID);
 void addClash(Scheme scheme, int semester, const char *moduleID);
+void menuLoop(Module *moduleList, Scheme *schemsList, int **teachingTimes);

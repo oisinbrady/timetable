@@ -95,5 +95,6 @@ void moduleInfo(Module * modulesList, Scheme * schemesList){
     for(int i = 0; i< sizeof(clashArray)/ sizeof(clashArray[0]); i++){
         printf("%s ", clashArray[i]);
     }
+    printf("\n");
 }
 

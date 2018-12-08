@@ -4,12 +4,16 @@
 #include <stdio.h>
 #include "functions.h"
 
-char *getFolder() {
+char *getFolder(char* argv[]) {
     int maxInputSize = 100;
-    char *fileDirectory = malloc((size_t) maxInputSize);
+    char *fileName = malloc((size_t) maxInputSize);
     printf("Enter the directory name of timetable files: ");
-    scanf("%s", fileDirectory);
-    return fileDirectory;
+    scanf("%s", fileName);
+    char *realFileName = malloc((size_t) maxInputSize);
+    realFileName[0] = '/';
+    fileName = strcat(realFileName, fileName);
+    char* filePath = strcat(argv[0],fileName);
+    return filePath;
     //
 }
 
@@ -19,16 +23,16 @@ char *getFolder() {
  * @return an array of struct Modules
  */
 Module * readModules(char *file){
-    //create string directory path for modules.txt
-    char*modules = strcat(file,"/modules.txt"); //TODO this will be OS specific
-    //attempt to open the modules.txt file in the user specified directory path
-    FILE *fileDirectory = fopen(modules, "r");
+    //attempt to open the file.txt file in the user specified directory path
+    char* modules = "/modules.txt";
+    file = strcat(file,modules);
+    FILE *fileDirectory = fopen(file, "r");
     //each module has all four variables:
     char moduleID[8];
     int semester;
     char lectureAmountAndHr[4];
     char pracAmountAndHr[4];
-    //find number of modules (lines) in the file
+    //find number of file (lines) in the file
     numberOfModules = 0;
     while(!feof(fileDirectory)){
         int ch =  fgetc(fileDirectory);
@@ -40,7 +44,7 @@ Module * readModules(char *file){
     //create a dynamic array whose size is based of the numberOfModules currently added
     //N.B calloc() assigns each element value to zero initially
     Module *listOfModules = calloc((size_t) numberOfModules, (sizeof(Module) + 3));
-    //iterate over each line in modules.txt to record each module
+    //iterate over each line in file.txt to record each module
     int moduleIndex = 0;
     while(fscanf(fileDirectory, "%s %d %s %s\n", moduleID, &semester, lectureAmountAndHr, pracAmountAndHr)!= EOF){
         //allocate memory for a new instance of module
@@ -103,7 +107,6 @@ Scheme * readSchemes(char *file, Module *modulesList){
         fgets(coreModules, sizeof(coreModules), fileDirectory);//retrieve the remaining characters on the line
         //instantiate a new newCoreModule struct
         char *moduleID = malloc(sizeof(char *) * 7);
-
         scheme->coreModule = NULL;
         if(numberOfCoreModules > 0){
             int currentModuleIndex = sizeof(coreModules) - 8;
