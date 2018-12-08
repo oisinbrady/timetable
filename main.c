@@ -11,7 +11,7 @@ void menuLoop(Module *modulesList, Scheme *schemesList, int **teachingTimes){
     printMenu();
     int option;
     while(true){
-        scanf("%d", &option);
+        scanf("%d", &option); //TODO unexpected behaviour if first input is random
         switch(option){
             case 1:
                 moduleInfo(modulesList, schemesList);
@@ -24,7 +24,7 @@ void menuLoop(Module *modulesList, Scheme *schemesList, int **teachingTimes){
                 //abort();
             default: printf("Invalid input!");
         }
-        printf("--------------------------------------------------------------\n");
+        printf("-------------------------------------------------------------\n");
    }
 }
 
