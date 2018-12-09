@@ -41,6 +41,8 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
     for (int i = 0; i < r; ++i) {
         timeTable[i] = calloc(c * sizeof(TimeTableCell) ,sizeof(TimeTableCell));
     }
+
+
     //TODO set the cells "boolean" value according to teachingTimesSlots array
     for (int j = 0; j < c; ++j) {
         for (int i = 0; i < r; ++i) {
@@ -102,7 +104,6 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
 
     //TODO find teaching hours for a module.. add up all relevant module teaching hours to get number of teaching hours in timetable
 
-    int tmp = availableTeachingHours; //<----use this var
     int currentlyTaughtHours = 0;
     //TODO WHILE(timetable is not full)
     //TODO iterate through timetable cells and for each cell with bool value == 1: add next module from relevantModulesArray
@@ -113,12 +114,21 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
     //TODO increment the currentHours var by the length of the lec/prac just added (e.g. currentHours += &module.pracAmountAndTime[2])
     //build the timetable array
     int currentRelevantModule = 0; //index for the modules array
-    while(currentlyTaughtHours <= totalHours){
+    int loopCounter = 0; //I need the var in the event that timetabling all modules is impossible with the given files and my implementation
+    while(currentlyTaughtHours <= totalHours && loopCounter < 1000){
         for (int i = 0; i < 7; ++i) { //iterate through timetable cells
             for (int j = 0; j < 9; ++j) {
-                if(currentRelevantModule > sizeof(relevantModules)/ sizeof(relevantModules[0])){
+
+                if(currentRelevantModule > (sizeof(relevantModules)/ sizeof(relevantModules[0])-1)){
                     currentRelevantModule = 0;
                 }
+
+                int numberOfLectures = (relevantModules[currentRelevantModule].lectureAmountAndHr[0] - '0');
+                int lengthOfLectures = relevantModules[currentRelevantModule].lectureAmountAndHr[2] - '0';
+                int numberOfPracticals = relevantModules[currentRelevantModule].pracAmountAndHr[0] - '0';
+                int lengthOfPracticals = relevantModules[currentRelevantModule].pracAmountAndHr[2] - '0';
+
+
                 CoreModule *currentCoreModule = timeTable[i][j].nextCoreModule;
                 CoreModule *coreModule = malloc(sizeof(coreModule)); //TODO remember to free() this!
                 if(currentCoreModule == NULL && timeTable[i][j].available == true){ //if the cell is empty and available for teaching
@@ -127,7 +137,35 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
                     coreModule->nextCoreModule = NULL;
                     currentCoreModule = coreModule;
                     currentCoreModule->nextCoreModule = timeTable[i][j].nextCoreModule;
-                    timeTable[i][j].nextCoreModule = currentCoreModule;
+                    if(numberOfPracticals > 0){ //if the module has practicals not timetabled
+                        numberOfPracticals--;
+                        char pracItoC = (char) (numberOfPracticals + '0');
+                        relevantModules[currentRelevantModule].pracAmountAndHr[0] = pracItoC;
+                        coreModule->moduleID[6] = 'P';
+                        //coreModule->moduleID[8] = '\000';
+                        if(j+lengthOfPracticals <= 9){
+                            timeTable[i][j].nextCoreModule = coreModule;
+                        }
+                        for (int k = 0; k < lengthOfPracticals; ++k) {
+                            int jIndex = k + 1;
+                            timeTable[i][jIndex].nextCoreModule = coreModule;
+                        }
+                        currentlyTaughtHours += (atoi(&relevantModules[currentRelevantModule].pracAmountAndHr[2]));
+                    }
+                    else if(numberOfLectures > 0){
+                        numberOfLectures--;
+                        char lectItoC = (char) (numberOfLectures + '0');
+                        relevantModules[currentRelevantModule].lectureAmountAndHr[0] = lectItoC;
+                        coreModule->moduleID[6] = 'L';
+                        if(j+lengthOfLectures <= 9){
+                            timeTable[i][j].nextCoreModule = coreModule;
+                        }
+                        for (int k = 0; k < lengthOfLectures; ++k) {
+                            int jIndex = k + 1;
+                            timeTable[i][jIndex].nextCoreModule = coreModule;
+                        }
+                        currentlyTaughtHours += (atoi(&relevantModules[currentRelevantModule].lectureAmountAndHr[2]));
+                    }
                     currentRelevantModule++;
                 }
                 //if there is no clash then add the currentCoreModule to the cell's list of coreModules //TODO this is producing a circular linked list (infinite loop - pointer pointing to itself)
@@ -135,68 +173,78 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
                     strcpy(coreModule->moduleID, relevantModules[currentRelevantModule].moduleID);
                     coreModule->semester = relevantModules[currentRelevantModule].semester;
                     coreModule->nextCoreModule = timeTable[i][j].nextCoreModule;
-                    timeTable[i][j].nextCoreModule = coreModule;
+                    //prioritize timetabling practicals
+                    if(numberOfPracticals > 0){ //if the module has practicals not timetabled
+                        numberOfPracticals--;
+                        char pracItoC = (char) (numberOfPracticals + '0');
+                        relevantModules[currentRelevantModule].pracAmountAndHr[0] = pracItoC;
+                        coreModule->moduleID[6] = 'P';
+                        if(j+lengthOfPracticals <= 9){
+                            timeTable[i][j].nextCoreModule = coreModule;
+                        }
+                        for (int k = 0; k < lengthOfPracticals; ++k) {
+                            int jIndex = k + 1;
+                            timeTable[i][jIndex].nextCoreModule = coreModule;
+                        }
+                        currentlyTaughtHours += (atoi(&relevantModules[currentRelevantModule].pracAmountAndHr[2]));
+                    }
+                    else if(numberOfLectures > 0){
+                        numberOfLectures--;
+                        char lectItoC = (char) (numberOfLectures + '0');
+                        relevantModules[currentRelevantModule].lectureAmountAndHr[0] = lectItoC;
+                        coreModule->moduleID[6] = 'L';
+                        if(j+lengthOfLectures <= 9){
+                            timeTable[i][j].nextCoreModule = coreModule;
+                        }
+                        for (int k = 0; k < lengthOfLectures; ++k) {
+                            int jIndex = k + 1;
+                            timeTable[i][jIndex].nextCoreModule = coreModule;
+                        }
+                        currentlyTaughtHours += (atoi(&relevantModules[currentRelevantModule].lectureAmountAndHr[2]));
+                    }
                 }
-                int moduleLectureHours = ((atoi(&relevantModules[0].lectureAmountAndHr[2]))* (atoi(&relevantModules[0].lectureAmountAndHr[0])));
-                int modulePracticalHours = ((atoi(&relevantModules[0].pracAmountAndHr[2])) * (atoi(&relevantModules[0].pracAmountAndHr[0])));
-                currentlyTaughtHours += (moduleLectureHours + modulePracticalHours);
                 currentRelevantModule++;
             }
         }
+        loopCounter++;
     }
 
-
-
-    /*for (int i = 0; i < r; i++) {
-        for (int j = 0; j < c; j++) {
-            CoreModule *ModuleToPrint = timeTable[i][j].nextCoreModule;
-            //printf("%s ", ModuleToPrint->moduleID);
-            while(ModuleToPrint != NULL){
-                printf(" %s", ModuleToPrint->moduleID);
-                ModuleToPrint = ModuleToPrint->nextCoreModule;
-            }
-        }
-        printf("\n");
-    }*/
-
     //TODO print out each cell's linked list
-    printf("\n\t\t9:00\t\t   10:00\t\t   11:00\t\t   12:00\t\t   13:00\t\t   14:00\t\t   15:00\t\t   16:00\t\t   17:00");
+    printf("\t\t9:00\t\t\t\t     10:00\t\t\t\t         11:00\t\t\t\t\t     12:00\t\t\t\t\t     13:00\t\t\t\t\t     14:00\t\t\t\t     15:00\t\t\t\t\t     16:00\t\t\t\t\t     17:00");
     for (int i = 0; i <  7; i++){
         printf("\n\n");
         switch(i){
             case 0:
-                printf("Mon\t\t");
+                printf("\n\nMon\t   ");
                 break;
             case 1:
-                printf("Tue\n\n\n\n\n");
+                printf("\n\nTue\t   ");
                 break;
             case 2:
-                printf("Wed\n\n\n\n\n");
+                printf("\n\nWed\t   ");
                 break;
             case 3:
-                printf("Thu\n\n\n\n\n");
+                printf("\n\nThu\t   ");
                 break;
             case 4:
-                printf("Fri\n\n\n\n\n");
+                printf("\n\nFri\t   ");
                 break;
             case 5:
-                printf("Sat\n\n\n\n\n");
+                printf("\n\nSat\t   ");
                 break;
             case 6:
-                printf("Sun\n\n\n\n\n");
+                printf("\n\nSun\t   ");
                 break;
         }
         for (int j = 0; j < 9; j++) {
             CoreModule *coreModuleToPrint = timeTable[i][j].nextCoreModule;
-            printf(" %s \t", coreModuleToPrint->moduleID);
-            //coreModuleToPrint = coreModuleToPrint->nextCoreModule;
-            //printf("\t %s \t", coreModuleToPrint->moduleID);
-            //while(coreModuleToPrint != NULL){
-              //  printf(" \n%s", coreModuleToPrint->moduleID);
-                //coreModuleToPrint = coreModuleToPrint->nextCoreModule;
-            //}
-            //printf("\n");
-
+            //printf("%s ",coreModuleToPrint->moduleID);
+            while(coreModuleToPrint != NULL){
+             printf(" %s", coreModuleToPrint->moduleID);
+             coreModuleToPrint = coreModuleToPrint->nextCoreModule;
+             //printf("\n");
+            }
+            printf("\t");
         }
     }
     printf("\n");
