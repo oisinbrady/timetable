@@ -4,7 +4,7 @@ typedef int bool;
 int numberOfModules;
 int numberOfSchemes;
 int availableTeachingHours;
-char clashArray[100][8];
+char clashArray[50][8];
 typedef struct module{
     char moduleID[7];
     int semester;

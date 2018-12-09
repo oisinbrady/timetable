@@ -19,10 +19,9 @@ bool isClash(struct timetableCell cell, Module currentRelevantModule, Scheme* re
                 return true;
             }
         }
-        //else{
-        //    currentCellModule = currentCellModule->nextCoreModule;
-        //}
+        currentCellModule = currentCellModule->nextCoreModule;
     }
+    memset(clashArray, 0, sizeof(clashArray[0][0]) * 50 * 8); //reset the clash array
     return false;
 }
 
@@ -77,7 +76,7 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
             numberOfRelevantSchemes++;
         }
     }
-    Scheme *relevantSchemes = calloc(numberOfRelevantSchemes, sizeof(Scheme));
+    Scheme *relevantSchemes = calloc((size_t)numberOfRelevantSchemes, sizeof(Scheme));
     int relevantSchemeIndex = 0;
     for (int k = 0; k < numberOfSchemes; ++k) {
         if(schemesList[k].yearOfStudy == yearOfStudy){ //TODO do I need to copy all of these variables?
@@ -115,66 +114,94 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
     //build the timetable array
     int currentRelevantModule = 0; //index for the modules array
     while(currentlyTaughtHours <= totalHours){
-        for (int i = 0; i < r; ++i) { //iterate through timetable cells
-            for (int j = 0; j < c; ++j) {
+        for (int i = 0; i < 7; ++i) { //iterate through timetable cells
+            for (int j = 0; j < 9; ++j) {
+                if(currentRelevantModule > sizeof(relevantModules)/ sizeof(relevantModules[0])){
+                    currentRelevantModule = 0;
+                }
                 CoreModule *currentCoreModule = timeTable[i][j].nextCoreModule;
                 CoreModule *coreModule = malloc(sizeof(coreModule)); //TODO remember to free() this!
-                if(currentCoreModule == NULL){ //if the cell is empty
+                if(currentCoreModule == NULL && timeTable[i][j].available == true){ //if the cell is empty and available for teaching
                     strcpy(coreModule->moduleID, relevantModules[currentRelevantModule].moduleID);
                     coreModule->semester = relevantModules[currentRelevantModule].semester;
                     coreModule->nextCoreModule = NULL;
                     currentCoreModule = coreModule;
-                }
-                //if there is no clash then add the currentCoreModule to the cell's list of coreModules
-                if(!isClash(timeTable[i][j], relevantModules[currentRelevantModule], relevantSchemes ,numberOfRelevantSchemes)) {
                     currentCoreModule->nextCoreModule = timeTable[i][j].nextCoreModule;
                     timeTable[i][j].nextCoreModule = currentCoreModule;
-                    int moduleLectureHours = ((atoi(&relevantModules[0].lectureAmountAndHr[2]))* (atoi(&relevantModules[0].lectureAmountAndHr[0])));
-                    int modulePracticalHours = ((atoi(&relevantModules[0].pracAmountAndHr[2])) * (atoi(&relevantModules[0].pracAmountAndHr[0])));
-                    currentlyTaughtHours += (moduleLectureHours + modulePracticalHours);
+                    currentRelevantModule++;
                 }
-                free(coreModule);
+                //if there is no clash then add the currentCoreModule to the cell's list of coreModules //TODO this is producing a circular linked list (infinite loop - pointer pointing to itself)
+                else if(!isClash(timeTable[i][j], relevantModules[currentRelevantModule], relevantSchemes ,numberOfRelevantSchemes) && timeTable[i][j].available == true && currentCoreModule != NULL) {
+                    strcpy(coreModule->moduleID, relevantModules[currentRelevantModule].moduleID);
+                    coreModule->semester = relevantModules[currentRelevantModule].semester;
+                    coreModule->nextCoreModule = timeTable[i][j].nextCoreModule;
+                    timeTable[i][j].nextCoreModule = coreModule;
+                }
+                int moduleLectureHours = ((atoi(&relevantModules[0].lectureAmountAndHr[2]))* (atoi(&relevantModules[0].lectureAmountAndHr[0])));
+                int modulePracticalHours = ((atoi(&relevantModules[0].pracAmountAndHr[2])) * (atoi(&relevantModules[0].pracAmountAndHr[0])));
+                currentlyTaughtHours += (moduleLectureHours + modulePracticalHours);
                 currentRelevantModule++;
             }
         }
     }
-    //TODO print out each cell's linked list
-    printf("\n\t9:00\t10:00\t11:00\t12:00\t13:00\t14:00\t15:00\t16:00\t17:00");
-    for (int i = 0; i <  7; i++){
+
+
+
+    /*for (int i = 0; i < r; i++) {
+        for (int j = 0; j < c; j++) {
+            CoreModule *ModuleToPrint = timeTable[i][j].nextCoreModule;
+            //printf("%s ", ModuleToPrint->moduleID);
+            while(ModuleToPrint != NULL){
+                printf(" %s", ModuleToPrint->moduleID);
+                ModuleToPrint = ModuleToPrint->nextCoreModule;
+            }
+        }
         printf("\n");
+    }*/
+
+    //TODO print out each cell's linked list
+    printf("\n\t\t9:00\t\t   10:00\t\t   11:00\t\t   12:00\t\t   13:00\t\t   14:00\t\t   15:00\t\t   16:00\t\t   17:00");
+    for (int i = 0; i <  7; i++){
+        printf("\n\n");
         switch(i){
             case 0:
-                printf("Mon");
+                printf("Mon\t\t");
                 break;
             case 1:
-                printf("Tue");
+                printf("Tue\n\n\n\n\n");
                 break;
             case 2:
-                printf("Wed");
+                printf("Wed\n\n\n\n\n");
                 break;
             case 3:
-                printf("Thu");
+                printf("Thu\n\n\n\n\n");
                 break;
             case 4:
-                printf("Fri");
+                printf("Fri\n\n\n\n\n");
                 break;
             case 5:
-                printf("Sat");
+                printf("Sat\n\n\n\n\n");
                 break;
             case 6:
-                printf("Sun");
+                printf("Sun\n\n\n\n\n");
                 break;
         }
         for (int j = 0; j < 9; j++) {
             CoreModule *coreModuleToPrint = timeTable[i][j].nextCoreModule;
-            while(coreModuleToPrint->nextCoreModule != NULL){
-                printf("\t  %s\t", coreModuleToPrint->moduleID);
-                coreModuleToPrint = coreModuleToPrint->nextCoreModule;
-            }
+            printf(" %s \t", coreModuleToPrint->moduleID);
+            //coreModuleToPrint = coreModuleToPrint->nextCoreModule;
+            //printf("\t %s \t", coreModuleToPrint->moduleID);
+            //while(coreModuleToPrint != NULL){
+              //  printf(" \n%s", coreModuleToPrint->moduleID);
+                //coreModuleToPrint = coreModuleToPrint->nextCoreModule;
+            //}
+            //printf("\n");
 
         }
     }
     printf("\n");
+
+
 }
 
 
