@@ -27,7 +27,6 @@ int updateClashArray(const Scheme *schemesList, const char *moduleID, int semest
         for (int j = 0; j < schemesList[i].numberOfCoreModules ; ++j) {
             if(strncmp(moduleID, currentCoreModule->moduleID,7) == 0) { //find any schemes with the entered moduleID
                 numberOfStudents += schemesList[i].numberOfStudents;
-                //TODO add all core modules in the same semester to data type holding all clashing modules
                 Scheme currentScheme = schemesList[i];
                 if(!clashArrayInit){
                     initialiseClashArray(currentScheme, semester, moduleID);
@@ -139,6 +138,7 @@ void moduleInfo(Module * modulesList, int ** teachingTimes, Scheme * schemesList
             case 6:
                 printf("Sun");
                 break;
+            default:break;
         }
         for (int j = 0; j < 9; j++) {
             printf("\t  %d\t", teachingTimes[i][j]);

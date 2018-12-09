@@ -37,5 +37,5 @@ void moduleInfo(Module * modulesList, int ** teachingTimes, Scheme * schemesList
 void initialiseClashArray(Scheme scheme, int semester, const char *moduleID);
 int updateClashArray(const Scheme *schemesList, const char *moduleID, int semester, int numberOfStudents, bool clashArrayInit);
 void addClash(Scheme scheme, int semester, const char *moduleID);
-bool isClash(struct timetableCell cell, Module currentRelevantModule, Scheme* relevantSchemesList, int numberOfRelevantSchemes);
+bool isClash(struct timetableCell cell, Module currentRelevantModule, Scheme* relevantSchemesList);
 void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTimeSlots);

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "functions.h"
 
-bool isClash(struct timetableCell cell, Module currentRelevantModule, Scheme* relevantSchemesList, int numberOfRelevantSchemes){
+bool isClash(struct timetableCell cell, Module currentRelevantModule, Scheme* relevantSchemesList){
     CoreModule *currentCellModule = cell.nextCoreModule;
     bool clashArrayInit = false;
     int numberOfStudents = 0; //if this remains zero then return true (as a module with no students is not to be timetabled
@@ -12,7 +12,6 @@ bool isClash(struct timetableCell cell, Module currentRelevantModule, Scheme* re
         if(strncmp(currentRelevantModule.moduleID, currentCellModule->moduleID, 7) == 0){ //check if the lecture is already added to this day and time
             return true;
         }
-        //TODO find the the scheme of currentCoreModule is the same scheme as relevantModule
         numberOfStudents = updateClashArray(relevantSchemesList, currentCellModule->moduleID, currentCellModule->semester, numberOfStudents, clashArrayInit);
         for (int i = 0; i < sizeof(clashArray)/ sizeof(clashArray[0]); ++i) {
             if(strncmp(currentRelevantModule.moduleID,clashArray[i], 7) == 0){
@@ -32,8 +31,6 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
     scanf("%d", &semester);
     printf("\nEnter year of study: ");
     scanf("%d", &yearOfStudy);
-    //TODO Build an academic timetable for one week of that semester.
-    //TODO You should not timetable modules if there are no students taking them.
     //construct a 2D array of TimeTableCell structs
     int r = 7; //Monday - Sunday
     int c = 9; //9 available teaching slots per day
@@ -43,7 +40,6 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
     }
 
 
-    //TODO set the cells "boolean" value according to teachingTimesSlots array
     for (int j = 0; j < c; ++j) {
         for (int i = 0; i < r; ++i) {
             if(teachingTimeSlots[i][j] == 1){
@@ -81,7 +77,7 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
     Scheme *relevantSchemes = calloc((size_t)numberOfRelevantSchemes, sizeof(Scheme));
     int relevantSchemeIndex = 0;
     for (int k = 0; k < numberOfSchemes; ++k) {
-        if(schemesList[k].yearOfStudy == yearOfStudy){ //TODO do I need to copy all of these variables?
+        if(schemesList[k].yearOfStudy == yearOfStudy){
             strcpy(relevantSchemes[relevantSchemeIndex].schemeCode, schemesList[k].schemeCode);
             relevantSchemes[relevantSchemeIndex].yearOfStudy = schemesList[k].yearOfStudy;
             relevantSchemes[relevantSchemeIndex].coreModule = schemesList[k].coreModule;
@@ -94,7 +90,6 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
         }
     }
 
-
     int totalHours = 0;
     for (int l = 0; l < numberOfModules; ++l) {
         int moduleLectureHours = ((atoi(&relevantModules[0].lectureAmountAndHr[2]))* (atoi(&relevantModules[0].lectureAmountAndHr[0])));
@@ -102,16 +97,7 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
         totalHours += (moduleLectureHours + modulePracticalHours);
     }
 
-    //TODO find teaching hours for a module.. add up all relevant module teaching hours to get number of teaching hours in timetable
-
     int currentlyTaughtHours = 0;
-    //TODO WHILE(timetable is not full)
-    //TODO iterate through timetable cells and for each cell with bool value == 1: add next module from relevantModulesArray
-    //TODO IF: current timeTableCell's linked list does not contain a module which belongs to the same scheme as next module
-    //TODO decrement relevantModulesArray[current] lecture/practical amount accordingly (add all practicals first for a module then lectures)
-    //TODO increment index of modulesArray (if currentModulesIndex > relevantModulesArray.length() THEN currentModulesIndex = 0)
-    //TODO goto next timetable cell (if currentCellIndex > timetable.length() THEN currentCell = 0)
-    //TODO increment the currentHours var by the length of the lec/prac just added (e.g. currentHours += &module.pracAmountAndTime[2])
     //build the timetable array
     int currentRelevantModule = 0; //index for the modules array
     int loopCounter = 0; //I need the var in the event that timetabling all modules is impossible with the given files and my implementation
@@ -130,7 +116,7 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
 
 
                 CoreModule *currentCoreModule = timeTable[i][j].nextCoreModule;
-                CoreModule *coreModule = malloc(sizeof(coreModule)); //TODO remember to free() this!
+                CoreModule *coreModule = malloc(sizeof(coreModule));
                 if(currentCoreModule == NULL && timeTable[i][j].available == true){ //if the cell is empty and available for teaching
                     strcpy(coreModule->moduleID, relevantModules[currentRelevantModule].moduleID);
                     coreModule->semester = relevantModules[currentRelevantModule].semester;
@@ -168,8 +154,8 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
                     }
                     currentRelevantModule++;
                 }
-                //if there is no clash then add the currentCoreModule to the cell's list of coreModules //TODO this is producing a circular linked list (infinite loop - pointer pointing to itself)
-                else if(!isClash(timeTable[i][j], relevantModules[currentRelevantModule], relevantSchemes ,numberOfRelevantSchemes) && timeTable[i][j].available == true && currentCoreModule != NULL) {
+                //if there is no clash then add the currentCoreModule to the cell's list of coreModules
+                else if(!isClash(timeTable[i][j], relevantModules[currentRelevantModule], relevantSchemes) && timeTable[i][j].available == true && currentCoreModule != NULL) {
                     strcpy(coreModule->moduleID, relevantModules[currentRelevantModule].moduleID);
                     coreModule->semester = relevantModules[currentRelevantModule].semester;
                     coreModule->nextCoreModule = timeTable[i][j].nextCoreModule;
@@ -209,7 +195,6 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
         loopCounter++;
     }
 
-    //TODO print out each cell's linked list
     printf("\t\t9:00\t\t\t\t     10:00\t\t\t\t         11:00\t\t\t\t\t     12:00\t\t\t\t\t     13:00\t\t\t\t\t     14:00\t\t\t\t     15:00\t\t\t\t\t     16:00\t\t\t\t\t     17:00");
     for (int i = 0; i <  7; i++){
         printf("\n\n");
@@ -235,14 +220,14 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
             case 6:
                 printf("\n\nSun\t   ");
                 break;
+            default:break;
         }
         for (int j = 0; j < 9; j++) {
             CoreModule *coreModuleToPrint = timeTable[i][j].nextCoreModule;
-            //printf("%s ",coreModuleToPrint->moduleID);
             while(coreModuleToPrint != NULL){
              printf(" %s", coreModuleToPrint->moduleID);
              coreModuleToPrint = coreModuleToPrint->nextCoreModule;
-             //printf("\n");
+             //printf("\n"); //TODO find out why this does not work as intended
             }
             printf("\t");
         }
