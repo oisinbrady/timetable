@@ -19,6 +19,30 @@ void initialiseClashArray(Scheme scheme, int semester, const char *moduleID) {
     }
 }
 
+
+int updateClashArray(const Scheme *schemesList, const char *moduleID, int semester, int numberOfStudents, bool clashArrayInit) {
+    for(int i = 0; i <= numberOfSchemes; i++) {
+        CoreModule *currentCoreModule = schemesList[i].coreModule;
+        CoreModule *clashes = malloc(sizeof(clashes));
+        for (int j = 0; j < schemesList[i].numberOfCoreModules ; ++j) {
+            if(strncmp(moduleID, currentCoreModule->moduleID,7) == 0) { //find any schemes with the entered moduleID
+                numberOfStudents += schemesList[i].numberOfStudents;
+                //TODO add all core modules in the same semester to data type holding all clashing modules
+                Scheme currentScheme = schemesList[i];
+                if(!clashArrayInit){
+                    initialiseClashArray(currentScheme, semester, moduleID);
+                    clashArrayInit = true;
+                    currentCoreModule = currentCoreModule->nextCoreModule;
+                    continue;
+                }
+                addClash(currentScheme, semester, moduleID);
+            }
+            currentCoreModule = currentCoreModule->nextCoreModule;
+        }
+    }
+    return numberOfStudents;
+}
+
 void addClash(Scheme scheme, int semester, const char *moduleID){
     CoreModule *current;
     current = scheme.coreModule;//current points to start of core modules list
@@ -75,28 +99,9 @@ void moduleInfo(Module * modulesList, int ** teachingTimes, Scheme * schemesList
             }
         }
 
-        //find the number of students that are sitting the entered module
-
         bool clashArrayInit = false;
-        for(int i = 0; i <= numberOfSchemes; i++) {
-            CoreModule *currentCoreModule = schemesList[i].coreModule;
-            CoreModule *clashes = malloc(sizeof(clashes));
-            for (int j = 0; j < schemesList[i].numberOfCoreModules ; ++j) {
-                if(strncmp(moduleID, currentCoreModule->moduleID,7) == 0) { //find any schemes with the entered moduleID
-                    numberOfStudents += schemesList[i].numberOfStudents;
-                    //TODO add all core modules in the same semester to data type holding all clashing modules
-                    Scheme currentScheme = schemesList[i];
-                    if(!clashArrayInit){
-                        initialiseClashArray(currentScheme, semester, moduleID);
-                        clashArrayInit = true;
-                        currentCoreModule = currentCoreModule->nextCoreModule;
-                        continue;
-                    }
-                    addClash(currentScheme, semester, moduleID);
-                }
-                currentCoreModule = currentCoreModule->nextCoreModule;
-            }
-        }
+        //find the number of students that are sitting the entered module and update the clash array
+        numberOfStudents = updateClashArray(schemesList, moduleID, semester, numberOfStudents, clashArrayInit);
         printf("Number of students: %d \n", numberOfStudents);
         printf("Clashing modules: ");
         for(int i = 0; i< sizeof(clashArray)/ sizeof(clashArray[0]); i++){

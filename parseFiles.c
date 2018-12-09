@@ -153,6 +153,7 @@ int ** readTimes(char *file) {
     int teachingSlotsUsed;
     int currentSession;
     int nextSession;
+    availableTeachingHours = 0;
     for (int i = 0; i < r ; ++i) {
         fscanf(fileDirectory, "%*s %d", &teachingSlotsUsed);
         fscanf(fileDirectory, "%d", &currentSession);
@@ -162,9 +163,7 @@ int ** readTimes(char *file) {
             //if the teaching slot is 1 hour long
             if(nextSession - currentSession < 2){
                 times[i][currentSession - 9] = 1; //element contents dictate the length of the session
-            }
-            else{
-                times[i][currentSession - 9] = 2;
+                availableTeachingHours++;
             }
             currentSession = nextSession;
             fscanf(fileDirectory, "%d", &nextSession);

@@ -3,6 +3,7 @@ typedef int bool;
 #define false 0
 int numberOfModules;
 int numberOfSchemes;
+int availableTeachingHours;
 char clashArray[100][8];
 typedef struct module{
     char moduleID[7];
@@ -34,5 +35,7 @@ void printMenu(void);
 void menuLoop(Module *moduleList, Scheme *schemesList, int **teachingTimes);
 void moduleInfo(Module * modulesList, int ** teachingTimes, Scheme * schemesList);
 void initialiseClashArray(Scheme scheme, int semester, const char *moduleID);
+int updateClashArray(const Scheme *schemesList, const char *moduleID, int semester, int numberOfStudents, bool clashArrayInit);
 void addClash(Scheme scheme, int semester, const char *moduleID);
+bool isClash(struct timetableCell cell, Module currentRelevantModule, Scheme* relevantSchemesList, int numberOfRelevantSchemes);
 void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTimeSlots);
