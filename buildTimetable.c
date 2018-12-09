@@ -77,7 +77,7 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
             numberOfRelevantSchemes++;
         }
     }
-    Scheme relevantSchemes[numberOfRelevantSchemes];
+    Scheme *relevantSchemes = calloc(numberOfRelevantSchemes, sizeof(Scheme));
     int relevantSchemeIndex = 0;
     for (int k = 0; k < numberOfSchemes; ++k) {
         if(schemesList[k].yearOfStudy == yearOfStudy){ //TODO do I need to copy all of these variables?
@@ -133,11 +133,49 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
                     int modulePracticalHours = ((atoi(&relevantModules[0].pracAmountAndHr[2])) * (atoi(&relevantModules[0].pracAmountAndHr[0])));
                     currentlyTaughtHours += (moduleLectureHours + modulePracticalHours);
                 }
+                free(coreModule);
                 currentRelevantModule++;
             }
         }
     }
+    //TODO print out each cell's linked list
+    printf("\n\t9:00\t10:00\t11:00\t12:00\t13:00\t14:00\t15:00\t16:00\t17:00");
+    for (int i = 0; i <  7; i++){
+        printf("\n");
+        switch(i){
+            case 0:
+                printf("Mon");
+                break;
+            case 1:
+                printf("Tue");
+                break;
+            case 2:
+                printf("Wed");
+                break;
+            case 3:
+                printf("Thu");
+                break;
+            case 4:
+                printf("Fri");
+                break;
+            case 5:
+                printf("Sat");
+                break;
+            case 6:
+                printf("Sun");
+                break;
+        }
+        for (int j = 0; j < 9; j++) {
+            CoreModule *coreModuleToPrint = timeTable[i][j].nextCoreModule;
+            while(coreModuleToPrint->nextCoreModule != NULL){
+                printf("\t  %s\t", coreModuleToPrint->moduleID);
+                coreModuleToPrint = coreModuleToPrint->nextCoreModule;
+            }
+
+        }
+    }
+    printf("\n");
 }
 
 
-    //TODO print out each cell's linked list
+
