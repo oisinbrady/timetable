@@ -21,9 +21,15 @@ void initialiseClashArray(Scheme scheme, int semester, const char *moduleID) {
 
 
 int updateClashArray(const Scheme *schemesList, const char *moduleID, int semester, int numberOfStudents, bool clashArrayInit) {
-    for(int i = 0; i <= numberOfSchemes; i++) {
+    for(int i = 0; i <= numberOfSchemes; i++) { //TODO possible break point for standard_1-hour option 2
         CoreModule *currentCoreModule = schemesList[i].coreModule;
         CoreModule *clashes = malloc(sizeof(clashes));
+        const char * checkIfEmpty = "0";
+        //in the event that the schemesList file is corrupt
+        if(strcmp(schemesList[i].schemeCode , checkIfEmpty) == 0){
+            return numberOfStudents;
+        }
+
         for (int j = 0; j < schemesList[i].numberOfCoreModules ; ++j) {
             if(strncmp(moduleID, currentCoreModule->moduleID,7) == 0) { //find any schemes with the entered moduleID
                 numberOfStudents += schemesList[i].numberOfStudents;

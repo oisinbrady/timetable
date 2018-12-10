@@ -6,13 +6,13 @@ int numberOfSchemes;
 int availableTeachingHours;
 char clashArray[50][8];
 typedef struct module{
-    char moduleID[8];
+    char moduleID[7];
     int semester;
     char lectureAmountAndHr[4];
     char pracAmountAndHr[4];
 } Module;
 typedef struct coreModule {
-    char moduleID[8];
+    char moduleID[7];
     int semester;
     struct coreModule *nextCoreModule;
 } CoreModule;

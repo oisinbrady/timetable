@@ -2,6 +2,7 @@
 #include <memory.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
 #include "functions.h"
 
 char *getFolder() {
@@ -67,7 +68,7 @@ Module * readModules(char *file){
 Scheme * readSchemes(char *file, Module *modulesList){
     size_t fileLength = strlen(file);
     file[fileLength-12] = '\0'; //remove "/modules.txt" from current file directory
-    char *schemes = strcat(file,"/schemes.txt"); //TODO OS specific!
+    char *schemes = strcat(file,"/schemes.txt");
     FILE *fileDirectory = fopen(schemes, "r");
     //find the total number of schemes in the text file
     numberOfSchemes = 0;
@@ -86,11 +87,13 @@ Scheme * readSchemes(char *file, Module *modulesList){
         int yearOfStudy;
         int numberOfStudents;
         int numberOfCoreModules;
+
         //allocate memory for a new instance of module
         Scheme *scheme = malloc(sizeof(*scheme) + 1); //+ 3 for the 3 terminating characters in each char sequence
         //assign all module information from .txt file to their subsequent struct (Module) values
         fscanf(fileDirectory,"%s", schemeCode);
         strcpy(scheme->schemeCode, schemeCode);
+
         fscanf(fileDirectory,"%d", &yearOfStudy);
         scheme->yearOfStudy = yearOfStudy;
         fscanf(fileDirectory,"%d", &numberOfStudents);
@@ -100,18 +103,42 @@ Scheme * readSchemes(char *file, Module *modulesList){
         // the size of the string of core modules is dependent on the numberOfCoreModules variable
         char coreModules[(numberOfCoreModules*7)+11];
         fgets(coreModules, sizeof(coreModules), fileDirectory);//retrieve the remaining characters on the line
+        //remove leading whitespace
+        char* i = coreModules;
+        char* j = coreModules;
+        int index =0;
+        while(*j != 0)
+        {
+            *i = *j++;
+            //TODO attempting to sanitize file characters
+            //normal ascii characters are from 65 - 90
+            if(*i != ' '){
+                int tmp = (int)*i;
+                if(((int)*i > 90 || (int)*i < 48) && (int)*i != 10){
+                    for (int k = index; k < strlen(coreModules); ++k) {
+                        char *end = "\000";
+                        coreModules[index] = *end;
+                    }
+                    break;
+                }
+                i++;
+            }
+            index++;
+        }
+        *i = 0;
         //instantiate a new newCoreModule struct
         char *moduleID = malloc(sizeof(char *) * 7);
         scheme->coreModule = NULL;
         if(numberOfCoreModules > 0){
-            int currentModuleIndex = sizeof(coreModules) - 8;
+            int currentModuleIndex = 0;
             for(int i = 0; i < numberOfCoreModules; i ++){
                 //create a new module struct
                 CoreModule *newCoreModule = malloc(sizeof(*newCoreModule) + 1);
                 //create a substring which is one of the core moduleID's and then add it to the newCoreModule->moduleID
-                strcpy(moduleID, &coreModules[currentModuleIndex]);
-                coreModules[currentModuleIndex - 1] = '\0';
-                currentModuleIndex -= 8;
+
+                strncpy(moduleID, &coreModules[currentModuleIndex],7);
+                //coreModules[currentModuleIndex - 1] = '\0';
+                currentModuleIndex += 7;
                 //assign the module's ID
                 strcpy(newCoreModule->moduleID, moduleID);
                 //add semester value to each core module
@@ -139,7 +166,7 @@ int ** readTimes(char *file) {
     size_t fileLength = strlen(file);
     file[fileLength-12] = '\0';
     //create string directory path for modules.txt
-    char *teachingTimes = strcat(file, "/times.txt"); //TODO this will be OS specific
+    char *teachingTimes = strcat(file, "/times.txt");
     //attempt to open the modules.txt file in the user specified directory path
     FILE *fileDirectory = fopen(teachingTimes, "r");
     //Teaching times have two variables: the day(Mon-Sun) & the teaching hours(9-6)
@@ -150,14 +177,18 @@ int ** readTimes(char *file) {
     for (int i = 0; i < r; ++i) {
         times[i] = (int *)calloc(c * sizeof(int) ,sizeof(int));
     }
-    int teachingSlotsUsed;
-    int currentSession;
-    int nextSession;
+    char tStr[4], curStr[4], nxtStr[4];
+    char *tStrPtr, *curStrPtr, *nxtStrPtr;
+    long teachingSlotsUsed, currentSession, nextSession;
     availableTeachingHours = 0;
     for (int i = 0; i < r ; ++i) {
-        fscanf(fileDirectory, "%*s %d", &teachingSlotsUsed);
-        fscanf(fileDirectory, "%d", &currentSession);
-        fscanf(fileDirectory, "%d", &nextSession);
+
+        fscanf(fileDirectory, "%*s %s", tStr);
+        fscanf(fileDirectory, "%s", curStr);
+        fscanf(fileDirectory, "%s", nxtStr);
+        teachingSlotsUsed = strtol(tStr, &tStrPtr, 10);
+        currentSession = strtol(curStr, &curStrPtr, 10);
+        nextSession = strtol(nxtStr, &nxtStrPtr, 10);
         for (int j = 0; j < teachingSlotsUsed; ++j) {
 
             //if the teaching slot is 1 hour long
