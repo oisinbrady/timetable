@@ -1,0 +1,10 @@
+A relatively complete standard data set.
+There are a large number of degree schemes.
+There are a number of degree schemes without any students.
+Most modules are used by several degree schemes.
+The modules have the correct amount of teaching time, but now all shown as one hour sessions (so more sessions).
+Teaching can take place at lots of times over the week.
+
+There is a restricted number of lecture and practical rooms.
+But of course, you only need to use rooms data for the extended program.
+For the first section, where you can assume there is an unlimited supply of rooms, your will probably timetable almost all lectures on Mondays!

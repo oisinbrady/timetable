@@ -1,0 +1,7 @@
+Monday 6 10 11 12 14 15 16
+Tuesday 6 10 11 12 14 15 16
+Wednesday 3 10 11 12 
+Thursday 6 10 11 12 14 15 16
+Friday 6 10 11 12 14 15 16
+Saturday 0
+Sunday 0
