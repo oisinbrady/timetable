@@ -193,48 +193,65 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
     }
 
     //PRINT THE TIMETABLE//
-    printf("\t\t9:00\t\t\t\t     10:00\t\t\t\t         11:00\t\t\t\t\t     12:00\t\t\t\t\t     13:00\t\t\t\t\t     14:00\t\t\t\t     15:00\t\t\t\t\t     16:00\t\t\t\t\t     17:00");
-    for (int i = 0; i <  7; i++){
-        printf("\n\n");
-        switch(i){
-            case 0:
-                printf("\n\nMon\t   ");
-                break;
-            case 1:
-                printf("\n\nTue\t   ");
-                break;
-            case 2:
-                printf("\n\nWed\t   ");
-                break;
-            case 3:
-                printf("\n\nThu\t   ");
-                break;
-            case 4:
-                printf("\n\nFri\t   ");
-                break;
-            case 5:
-                printf("\n\nSat\t   ");
-                break;
-            case 6:
-                printf("\n\nSun\t   ");
-                break;
-            default:break;
-        }
-        for (int j = 0; j < 9; j++) {
-            CoreModule *coreModuleToPrint = timeTable[i][j].nextCoreModule;
-            printf("|");
-            while(coreModuleToPrint != NULL){
-             printf(" %s", coreModuleToPrint->moduleID);
-             coreModuleToPrint = coreModuleToPrint->nextCoreModule;
-             printf("\n"); //TODO find out why this does not work as intended
+    printf("\t\t\t\t\t9:00\t\t\t\t    10:00\t\t\t\t    11:00\t\t\t\t\t12:00\t\t\t\t\t13:00\t\t\t\t\t14:00\t\t\t\t\t15:00\t\t\t\t\t16:00\t\t\t\t\t17:00");
+        for (int i = 0; i <  7; i++) {
+            printf("\n");
+            switch (i) {
+                case 0:
+                    printf("Mon\t");
+                    break;
+                case 1:
+                    printf("Tue\t");
+                    break;
+                case 2:
+                    printf("Wed\t");
+                    break;
+                case 3:
+                    printf("Thu\t");
+                    break;
+                case 4:
+                    printf("Fri\t");
+                    break;
+                case 5:
+                    printf("Sat\t");
+                    break;
+                case 6:
+                    printf("Sun\t");
+                    break;
+                default:
+                    break;
             }
-            printf(" |");
-            printf("\t");
+            for (int j = 0; j < 9; j++) {
+                CoreModule *coreModuleToPrint = timeTable[i][j].nextCoreModule;
+
+                while(coreModuleToPrint != NULL){
+                    printf(" %s", coreModuleToPrint->moduleID);
+                    coreModuleToPrint = coreModuleToPrint->nextCoreModule;
+                }
+                printf("\t");
+                /*CoreModule *coreModuleToPrint = timeTable[i][j].nextCoreModule;
+                printf("\n");
+                printCell(coreModuleToPrint);
+                printf("\n");*/
+            }
         }
-    }
     printf("\n");
+}
 
-
+void printCell(CoreModule* listOfModules){
+    int cellModules = 1;
+    CoreModule *listFindNumberOfModules = listOfModules;
+    while(listFindNumberOfModules->nextCoreModule != NULL){
+        cellModules++;
+        listFindNumberOfModules = listFindNumberOfModules->nextCoreModule;
+    }
+    char * allModulesInCell = malloc((sizeof(char*) * 8) * cellModules);
+    while(listOfModules->nextCoreModule != NULL){
+        strcat(allModulesInCell, listOfModules->moduleID);
+        strcat(allModulesInCell, "\n");
+        listOfModules = listOfModules->nextCoreModule;
+    }
+    printf("%s",allModulesInCell);
 }
 
 
