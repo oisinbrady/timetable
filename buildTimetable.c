@@ -8,7 +8,7 @@
  * Check if there is a clash when attempting to add a module to the timetable's cell
  * This function returns a boolean value accordingly
  */
-bool isClash(struct timetableCell cell, Module currentRelevantModule, Scheme* relevantSchemesList){
+bool isClash(struct timetableCell cell, Module currentRelevantModule, Scheme* SchemesList){
     CoreModule *currentCellModule = cell.nextCoreModule;
     bool clashArrayInit = false;
     int numberOfStudents = 0; //if this remains zero then return true (as a module with no students is not to be timetabled
@@ -16,7 +16,7 @@ bool isClash(struct timetableCell cell, Module currentRelevantModule, Scheme* re
         if(strncmp(currentRelevantModule.moduleID, currentCellModule->moduleID, 7) == 0){ //check if the lecture is already added to this day and time
             return true;
         }
-        numberOfStudents = updateClashArray(relevantSchemesList, currentCellModule->moduleID, currentCellModule->semester, numberOfStudents, clashArrayInit);
+        numberOfStudents = updateClashArray(SchemesList, currentCellModule->moduleID, currentCellModule->semester, numberOfStudents, clashArrayInit);
         for (int i = 0; i < sizeof(clashArray)/ sizeof(clashArray[0]); ++i) {
             if(strncmp(currentRelevantModule.moduleID,clashArray[i], 7) == 0){
                 return true;
@@ -120,7 +120,7 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
                         char pracItoC = (char) (numberOfPracticals + '0');
                         relevantModules[currentRelevantModule].pracAmountAndHr[0] = pracItoC;
                         //append a 'P' onto the module ID so that the user can determine if the slot session is a practical or lecture
-                        coreModule->moduleID[6] = 'P';
+                        coreModule->moduleID[7] = 'P';
                         if(j+lengthOfPracticals <= 9){
                             timeTable[i][j].nextCoreModule = coreModule;
                         }
@@ -175,7 +175,7 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
                         numberOfLectures--;
                         char lectItoC = (char) (numberOfLectures + '0');
                         relevantModules[currentRelevantModule].lectureAmountAndHr[0] = lectItoC;
-                        coreModule->moduleID[6] = 'L';
+                        coreModule->moduleID[7] = 'L';
                         if(j+lengthOfLectures <= 9){
                             timeTable[i][j].nextCoreModule = coreModule;
                         }
@@ -193,48 +193,55 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
     }
 
     //PRINT THE TIMETABLE//
-    printf("\t\t\t\t\t9:00\t\t\t\t    10:00\t\t\t\t    11:00\t\t\t\t\t12:00\t\t\t\t\t13:00\t\t\t\t\t14:00\t\t\t\t\t15:00\t\t\t\t\t16:00\t\t\t\t\t17:00");
-        for (int i = 0; i <  7; i++) {
-            printf("\n");
-            switch (i) {
-                case 0:
-                    printf("Mon\t");
-                    break;
-                case 1:
-                    printf("Tue\t");
-                    break;
-                case 2:
-                    printf("Wed\t");
-                    break;
-                case 3:
-                    printf("Thu\t");
-                    break;
-                case 4:
-                    printf("Fri\t");
-                    break;
-                case 5:
-                    printf("Sat\t");
-                    break;
-                case 6:
-                    printf("Sun\t");
-                    break;
-                default:
-                    break;
-            }
-            for (int j = 0; j < 9; j++) {
-                CoreModule *coreModuleToPrint = timeTable[i][j].nextCoreModule;
+    char* t9 = "9:00";
+    char* t10 = "10:00"; char* t11 = "11:00"; char* t12 = "12:00"; char* t13 = "13:00"; char* t14 = "14:00"; char* t15 = "15:00"; char* t16 = "16:00"; char* t17 = "17:00";
+    printf("\n\n %50.50s %90.90s %90.90s %90.90s %90.90s %90.90s %90.90s %90.90s %90.90s \n", t9, t10, t11, t12, t13, t14, t15, t16, t17);
+    for (int m = 0; m < 8; ++m) {
+        printf("%104.104s","__ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __");
+    }
 
-                while(coreModuleToPrint != NULL){
-                    printf(" %s", coreModuleToPrint->moduleID);
-                    coreModuleToPrint = coreModuleToPrint->nextCoreModule;
-                }
-                printf("\t");
-                /*CoreModule *coreModuleToPrint = timeTable[i][j].nextCoreModule;
-                printf("\n");
-                printCell(coreModuleToPrint);
-                printf("\n");*/
-            }
+    for (int i = 0; i <  7; i++){
+        printf("\n");
+        switch(i){
+            case 0:
+                printf("\n\nMon\t\t  ");
+                break;
+            case 1:
+                printf("\n\nTue\t\t  ");
+                break;
+            case 2:
+                printf("\n\nWed\t\t  ");
+                break;
+            case 3:
+                printf("\n\nThu\t\t  ");
+                break;
+            case 4:
+                printf("\n\nFri\t\t  ");
+                break;
+            case 5:
+                printf("\n\nSat\t\t  ");
+                break;
+            case 6:
+                printf("\n\nSun\t\t  ");
+                break;
+            default:break;
         }
+        for (int j = 0; j < 9; j++) {
+            CoreModule *coreModuleToPrint = timeTable[i][j].nextCoreModule;
+            char * allModulesToPrint = malloc(((sizeof(char *)+1)*7));
+            while(coreModuleToPrint != NULL){
+                strcat(allModulesToPrint, coreModuleToPrint->moduleID);
+                strcat(allModulesToPrint, " ");
+                coreModuleToPrint = coreModuleToPrint->nextCoreModule;
+            }
+            printf("|");
+            printf("%90.90s", allModulesToPrint);
+
+            //printf("%.*s", (spacingLen * spacingValue)," ");
+            //printf("|\t\t");
+            //printf("\t");
+        }
+    }
     printf("\n");
 }
 
