@@ -80,9 +80,10 @@ Scheme * readSchemes(char *file, Module *modulesList){
     }
     rewind(fileDirectory);
     Scheme *listOfSchemes = calloc((size_t) numberOfSchemes, (sizeof(Scheme) + 1));
+
+    int schemeIndex = 0;
     //iterate over each line in schemes.txt to record each module
-    int moduleIndex = 0;
-    while(!feof(fileDirectory)){
+    while(!feof(fileDirectory) && schemeIndex < numberOfSchemes){
         char schemeCode[5];
         int yearOfStudy;
         int numberOfStudents;
@@ -93,6 +94,8 @@ Scheme * readSchemes(char *file, Module *modulesList){
         //assign all module information from .txt file to their subsequent struct (Module) values
         fscanf(fileDirectory,"%s", schemeCode);
         strcpy(scheme->schemeCode, schemeCode);
+        //save names of schemes in an array
+
 
         fscanf(fileDirectory,"%d", &yearOfStudy);
         scheme->yearOfStudy = yearOfStudy;
@@ -110,10 +113,10 @@ Scheme * readSchemes(char *file, Module *modulesList){
         while(*j != 0)
         {
             *i = *j++;
-            //TODO attempting to sanitize file characters
+            //attempting to sanitize data file
             //normal ascii characters are from 65 - 90
             if(*i != ' '){
-                int tmp = (int)*i;
+                //int tmp = (int)*i; //for debugging purposes
                 if(((int)*i > 90 || (int)*i < 48) && (int)*i != 10){
                     for (int k = index; k < strlen(coreModules); ++k) {
                         char *end = "\000";
@@ -152,8 +155,8 @@ Scheme * readSchemes(char *file, Module *modulesList){
             }
         }
         //add the instantiated struct to an array of structs
-        listOfSchemes[moduleIndex] = *scheme;
-        moduleIndex++;
+        listOfSchemes[schemeIndex] = *scheme;
+        schemeIndex++;
         //free the memory allocated to the new instance of Scheme, CoreModule & moduleID to prevent memory leaks
         free(moduleID);
         free(scheme);
@@ -162,6 +165,11 @@ Scheme * readSchemes(char *file, Module *modulesList){
     return listOfSchemes;
 }
 
+/**
+ * Create a 2D array of the times in which teaching can be timetabled in one week
+ * @param file the file containing all times details
+ * @return a 2D array of the times in which teaching can be timetabled in one week
+ */
 int ** readTimes(char *file) {
     size_t fileLength = strlen(file);
     file[fileLength-12] = '\0';
@@ -197,7 +205,7 @@ int ** readTimes(char *file) {
                 availableTeachingHours++;
             }
             currentSession = nextSession;
-            fscanf(fileDirectory, "%d", &nextSession);
+            fscanf(fileDirectory, "%li", &nextSession);
         }
     }
     return times;

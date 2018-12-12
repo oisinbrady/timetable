@@ -2,17 +2,24 @@
 #include <stdlib.h>
 #include "functions.h"
 
+/**
+ * print the menu options on the CLI
+ */
 void printMenu(){
     printf("\nOptions: \n1 = query module\n2 = make timetable\n3 = quit\n");
 }
 
+/**
+ * this menu will continuosly loop and carry out commands according to the users option(s) until they select 3
+ * to quit the program
+ */
 void menuLoop(Module *modulesList, Scheme *schemesList, int **teachingTimes){
     printf("--------------------------------------------------------------------------");
     printMenu();
     int option;
     while(true){
         printf("Enter Option: \n");
-        scanf(" %d", &option); //TODO unexpected behaviour if first input is random
+        scanf(" %d", &option);
         switch(option){
             case 1:
                 moduleInfo(modulesList, teachingTimes, schemesList);
@@ -21,14 +28,18 @@ void menuLoop(Module *modulesList, Scheme *schemesList, int **teachingTimes){
                 buildTimetable(modulesList, schemesList, teachingTimes);
                 break;
             case 3:
-                exit(0); //TODO this does not work...
-                //abort();
+                exit(0);
             default: printf("Invalid input!");
         }
         printf("--------------------------------------------------------------------------\n");
    }
 }
 
+/**
+ * initial statements responsible for parsing the files in the user determined folder
+ * after which the program goes into a menu loop where program flow is determined by the users input
+ * @return int exit code
+ */
 int main() {
     char* folderPath = getFolder();
     Module *modulesList = readModules(folderPath);
@@ -43,7 +54,12 @@ int main() {
 
 
 
-//PRINT TESTS//
+
+
+
+
+
+//TEST data sets with print blocks//
 
 /*for (int i = 0; i < 95; i++){
 printf("%s \n", schemesList[i].schemeCode);
