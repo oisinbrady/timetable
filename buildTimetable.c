@@ -236,30 +236,7 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
             }
             printf("|");
             printf("%90.90s", allModulesToPrint);
-
-            //printf("%.*s", (spacingLen * spacingValue)," ");
-            //printf("|\t\t");
-            //printf("\t");
         }
     }
     printf("\n");
 }
-
-void printCell(CoreModule* listOfModules){
-    int cellModules = 1;
-    CoreModule *listFindNumberOfModules = listOfModules;
-    while(listFindNumberOfModules->nextCoreModule != NULL){
-        cellModules++;
-        listFindNumberOfModules = listFindNumberOfModules->nextCoreModule;
-    }
-    char * allModulesInCell = malloc((sizeof(char*) * 8) * cellModules);
-    while(listOfModules->nextCoreModule != NULL){
-        strcat(allModulesInCell, listOfModules->moduleID);
-        strcat(allModulesInCell, "\n");
-        listOfModules = listOfModules->nextCoreModule;
-    }
-    printf("%s",allModulesInCell);
-}
-
-
-
