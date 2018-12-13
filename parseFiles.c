@@ -132,12 +132,12 @@ Scheme * readSchemes(char *file, Module *modulesList){
         //instantiate a new newCoreModule struct
         char *moduleID = malloc(sizeof(char *) * 7);
         //create a new module struct
-        CoreModule *newCoreModule = malloc(sizeof(*newCoreModule) + 1);
+
         scheme->coreModule = NULL;
         if(numberOfCoreModules > 0){
             int currentModuleIndex = 0;
             for(int coreMIndex = 0; coreMIndex < numberOfCoreModules; coreMIndex ++){
-
+                CoreModule *newCoreModule = malloc(sizeof(*newCoreModule) + 1);
                 //create a substring which is one of the core moduleID's and then add it to the newCoreModule->moduleID
 
                 strncpy(moduleID, &coreModules[currentModuleIndex],7);
@@ -161,7 +161,7 @@ Scheme * readSchemes(char *file, Module *modulesList){
         listOfSchemes[schemeIndex] = *scheme;
         schemeIndex++;
         //free the memory allocated to the new instance of Scheme, CoreModule & moduleID to prevent memory leaks
-        free(newCoreModule);
+        //free(newCoreModule);
         free(moduleID);
         free(scheme);
     }
