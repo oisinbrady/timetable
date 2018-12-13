@@ -13,27 +13,26 @@ void printMenu(){
  * this menu will continuosly loop and carry out commands according to the users option(s) until they select 3
  * to quit the program
  */
-void menuLoop(Module *modulesList, Scheme *schemesList, int **teachingTimes){
+int menuLoop(Module *modulesList, Scheme *schemesList, int **teachingTimes){
     printf("--------------------------------------------------------------------------");
     printMenu();
     int option;
-    while(true){
-        printf("Enter Option: \n");
-        scanf(" %d", &option);
-        switch(option){
-            case 1:
-                moduleInfo(modulesList, teachingTimes, schemesList);
-                break;
-            case 2:
-                buildTimetable(modulesList, schemesList, teachingTimes);
-                break;
-            case 3:
-                exit(0);
-            default: printf("Invalid input!");
+
+    printf("Enter Option: \n");
+    scanf(" %d", &option);
+    switch(option){
+        case 1:
+            moduleInfo(modulesList, teachingTimes, schemesList);
+            return 1;
+        case 2:
+            buildTimetable(modulesList, schemesList, teachingTimes);
+            return 2;
+        case 3:
+            return 3;
+        default: printf("Invalid input!");
         }
         printf("\n\n");
         printf("--------------------------------------------------------------------------\n");
-   }
 }
 
 /**
@@ -46,7 +45,17 @@ int main() {
     Module *modulesList = readModules(folderPath);
     Scheme *schemesList  = readSchemes(folderPath, modulesList);
     int **teachingTimes = readTimes(folderPath);
-    menuLoop(modulesList, schemesList, teachingTimes);
+    do{}while(menuLoop(modulesList, schemesList, teachingTimes) != 3);
+    free(folderPath);
+    free(modulesList);
+    free(schemesList);
+    //free calloc'd memory in the 2D times array
+    for (int i = 0; i < 7; i++)
+    {
+        int* currentIntPtr = teachingTimes[i];
+        free(currentIntPtr);
+    }
+    free(teachingTimes);
     return 0;
 }
 

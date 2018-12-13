@@ -56,7 +56,7 @@ Module * readModules(char *file){
         //free the memory allocated to the new instance of Module to prevent memory leaks
         free(module);
     }
-    free(fileDirectory);
+    //free(fileDirectory);
     return listOfModules;
 }
 
@@ -90,7 +90,7 @@ Scheme * readSchemes(char *file, Module *modulesList){
         int numberOfCoreModules;
 
         //allocate memory for a new instance of module
-        Scheme *scheme = malloc(sizeof(*scheme) + 1); //+ 3 for the 3 terminating characters in each char sequence
+        Scheme *scheme = malloc(sizeof(*scheme) + 1);
         //assign all module information from .txt file to their subsequent struct (Module) values
         fscanf(fileDirectory,"%s", schemeCode);
         strcpy(scheme->schemeCode, schemeCode);
@@ -131,37 +131,41 @@ Scheme * readSchemes(char *file, Module *modulesList){
         *i = 0;
         //instantiate a new newCoreModule struct
         char *moduleID = malloc(sizeof(char *) * 7);
+        //create a new module struct
+        CoreModule *newCoreModule = malloc(sizeof(*newCoreModule) + 1);
         scheme->coreModule = NULL;
         if(numberOfCoreModules > 0){
             int currentModuleIndex = 0;
-            for(int i = 0; i < numberOfCoreModules; i ++){
-                //create a new module struct
-                CoreModule *newCoreModule = malloc(sizeof(*newCoreModule) + 1);
+            for(int coreMIndex = 0; coreMIndex < numberOfCoreModules; coreMIndex ++){
+
                 //create a substring which is one of the core moduleID's and then add it to the newCoreModule->moduleID
 
                 strncpy(moduleID, &coreModules[currentModuleIndex],7);
                 //coreModules[currentModuleIndex - 1] = '\0';
                 currentModuleIndex += 7;
                 //assign the module's ID
-                strcpy(newCoreModule->moduleID, moduleID);
+                strncpy(newCoreModule->moduleID, moduleID , 7);
                 //add semester value to each core module
-                for(int j = 0; j < numberOfModules; j++){
-                    if(strncmp(moduleID, modulesList[j].moduleID, 7) == 0){
-                        newCoreModule->semester = modulesList[j].semester;
+                for(int moduleIndex = 0; moduleIndex < numberOfModules; moduleIndex++){
+                    if(strncmp(moduleID, modulesList[moduleIndex].moduleID, 7) == 0){
+                        int semester = modulesList[moduleIndex].semester;
+                        newCoreModule->semester = semester;
                     }
                 }
                 newCoreModule->nextCoreModule = scheme->coreModule;
                 scheme->coreModule = newCoreModule; //the new core module is now the array
             }
         }
+
         //add the instantiated struct to an array of structs
         listOfSchemes[schemeIndex] = *scheme;
         schemeIndex++;
         //free the memory allocated to the new instance of Scheme, CoreModule & moduleID to prevent memory leaks
+        free(newCoreModule);
         free(moduleID);
         free(scheme);
     }
-    free(fileDirectory);
+    //free(fileDirectory);
     return listOfSchemes;
 }
 

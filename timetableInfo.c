@@ -87,7 +87,7 @@ void addClash(Scheme scheme, int semester, const char *moduleID){
             if (!clashAlreadyRecorded && current->semester == semester && (strncmp(current->moduleID, moduleID , 7) != 0) ) {
                 for (int l = 0; l < sizeof(clashArray); ++l) { //find the next free slot in the clash array
                     if (strncmp("\000", clashArray[l], 7) == 0) {
-                        strcpy((char *) clashArray[l], current->moduleID);
+                        strncpy((char *) clashArray[l], current->moduleID, 8);
                         break;
                     }
                 }

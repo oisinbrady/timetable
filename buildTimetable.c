@@ -107,7 +107,7 @@ void buildTimetable(Module *modulesList, Scheme * schemesList, int ** teachingTi
 
                 //Add any relevant module to a cell that is empty (this block of code ignores logic for finding clashes)
                 CoreModule *currentCoreModule = timeTable[i][j].nextCoreModule;
-                CoreModule *coreModule = malloc(sizeof(coreModule));
+                CoreModule *coreModule = malloc(sizeof(*coreModule));
                 if(currentCoreModule == NULL && timeTable[i][j].available == true){ //if the cell is empty and available for teaching
                     strcpy(coreModule->moduleID, relevantModules[currentRelevantModule].moduleID);
                     coreModule->semester = relevantModules[currentRelevantModule].semester;

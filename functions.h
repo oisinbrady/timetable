@@ -32,7 +32,7 @@ Module * readModules(char *file);
 Scheme * readSchemes(char *file, Module *modulesList);
 int ** readTimes(char *file); //7 days a week w/ a max of 9 hours teaching/day
 void printMenu(void);
-void menuLoop(Module *moduleList, Scheme *schemesList, int **teachingTimes);
+int menuLoop(Module *moduleList, Scheme *schemesList, int **teachingTimes);
 void moduleInfo(Module * modulesList, int ** teachingTimes, Scheme * schemesList);
 void initialiseClashArray(Scheme scheme, int semester, const char *moduleID);
 int updateClashArray(const Scheme *schemesList, const char *moduleID, int semester, int numberOfStudents, bool clashArrayInit);
