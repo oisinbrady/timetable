@@ -7,6 +7,7 @@ File names:
 HOW TO BUILD PROGRAM
 - launch Clion and select "Import Project from Sources"
 - Select the zip file: "timetable.zip"
+
 IMPORTANT
 In order this program to correctly read files you must select the working directory:
 - Select the drop down menu to the right of the green hammer (build) icon
