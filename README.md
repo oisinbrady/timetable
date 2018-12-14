@@ -9,7 +9,7 @@ HOW TO BUILD PROGRAM
 - Select the zip file: "timetable.zip"
 
 IMPORTANT
-In order this program to correctly read files you must select the working directory:
+In order for this program to correctly read files you must select the working directory:
 - Select the drop down menu to the right of the green hammer (build) icon
 - Select "Edit Configurations..."
 - Make sure the "Working directory" field is the file path of this program
