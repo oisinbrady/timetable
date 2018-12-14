@@ -1,10 +1,4 @@
 # timetable
-cc --version
-cc (Ubuntu 7.3.0-27ubuntu1~18.04) 7.3.0
-Copyright (C) 2017 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
----------------------------------------------------------------------------
 File names:
 - Assignment source code: "timetable.zip"
 - Screencast: "screencast.MP4"
@@ -21,3 +15,10 @@ In order this program to correctly read files you must select the working direct
     (- e.g. /home/user/CLionProjects/timetable)
 
 Program uses C standard library
+
+cc --version
+cc (Ubuntu 7.3.0-27ubuntu1~18.04) 7.3.0
+Copyright (C) 2017 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+---------------------------------------------------------------------------
